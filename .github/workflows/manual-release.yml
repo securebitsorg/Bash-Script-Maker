@@ -92,30 +92,28 @@ jobs:
 
     - name: Create GitHub Release
       if: ${{ inputs.create_release }}
-      uses: actions/create-release@v1.2.0
+      run: |
+        gh release create "v${{ steps.new_version.outputs.new_version }}" \
+          --title "Release ${{ steps.new_version.outputs.new_version }}" \
+          --notes "## What's Changed
+
+        ${{ inputs.release_notes || 'Automated release' }}
+
+        ### Version Information
+        - **Version**: ${{ steps.new_version.outputs.new_version }}
+        - **Previous Version**: ${{ steps.current_version.outputs.current_version }}
+        - **Version Type**: ${{ inputs.version_type }}
+
+        ### Installation
+        \`\`\`bash
+        pip install bash-script-maker==${{ steps.new_version.outputs.new_version }}
+        \`\`\`
+
+        ### Downloads
+        - Source code: [ZIP](https://github.com/${{ github.repository }}/archive/v${{ steps.new_version.outputs.new_version }}.zip)
+        - Tarball: [TAR.GZ](https://github.com/${{ github.repository }}/archive/v${{ steps.new_version.outputs.new_version }}.tar.gz)" \
+          --draft=false \
+          --prerelease=false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: "v${{ steps.new_version.outputs.new_version }}"
-        release_name: "Release ${{ steps.new_version.outputs.new_version }}"
-        body: |
-          ## What's Changed
-
-          ${{ inputs.release_notes || 'Automated release' }}
-
-          ### Version Information
-          - **Version**: ${{ steps.new_version.outputs.new_version }}
-          - **Previous Version**: ${{ steps.current_version.outputs.current_version }}
-          - **Version Type**: ${{ inputs.version_type }}
-
-          ### Installation
-          ```bash
-          pip install bash-script-maker==${{ steps.new_version.outputs.new_version }}
-          ```
-
-          ### Downloads
-          - Source code: [ZIP](https://github.com/${{ github.repository }}/archive/v${{ steps.new_version.outputs.new_version }}.zip)
-          - Tarball: [TAR.GZ](https://github.com/${{ github.repository }}/archive/v${{ steps.new_version.outputs.new_version }}.tar.gz)
-        draft: false
-        prerelease: false
 # Finish

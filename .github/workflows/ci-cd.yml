@@ -93,18 +93,22 @@ jobs:
 
     - name: Build package
       run: python -m build
-    - name: Check package
-      run: |
-        python -m twine check dist/*
 
+    - name: Check package
+      uses: codecov/codecov-action@v3
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
         name: python-package
         path: dist/
         retention-days: 30
-  release:
-    runs-on: ubuntu-latest
+        Invalid workflow file: .github/workflows/ci-cd.yml#L1
+        (Line: 105, Col: 7): 'with' is already defined, (Line: 110, Col: 5): 'needs' is already defined, (Line: 115, Col: 5): 'steps' is already defined
+        
+      with:
+        file: ./coverage.xml
+        fail_ci_if_error: false
+
   # Build-Job für Package-Erstellung
     needs: build
     if: github.event_name == 'release' && github.event.action == 'published'
@@ -142,6 +146,9 @@ jobs:
       if: github.repository_owner == 'yourusername'  # Ändern Sie dies zu Ihrem GitHub-Benutzernamen
       env:
         TWINE_USERNAME: ${{ github.actor }}
+        Invalid workflow file: .github/workflows/ci-cd.yml#L1
+        (Line: 105, Col: 7): 'with' is already defined, (Line: 110, Col: 5): 'needs' is already defined, (Line: 115, Col: 5): 'steps' is already defined
+        
         TWINE_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
       run: |
         python -m twine upload --repository-url https://upload.pypi.org/legacy/ dist/*
@@ -237,8 +244,9 @@ jobs:
       with:
         fetch-depth: 0
         token: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Set up Python
+        Invalid workflow file: .github/workflows/ci-cd.yml#L1
+        (Line: 105, Col: 7): 'with' is already defined, (Line: 110, Col: 5): 'needs' is already defined, (Line: 115, Col: 5): 'steps' is already defined
+        
       uses: actions/setup-python@v4
       with:
         python-version: ${{ env.PYTHON_VERSION }}
