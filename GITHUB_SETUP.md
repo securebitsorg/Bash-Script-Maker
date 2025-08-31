@@ -160,6 +160,20 @@ GitHub Actions benötigt explizite Berechtigungen für bestimmte Operationen:
 - **`security-events: write`** - Hochladen von CodeQL-Ergebnissen
 - **`actions: read`** - Lesen von Workflow-Informationen
 
+### tkinter - System-Paket vs. pip-Paket
+
+**Wichtiger Hinweis zu tkinter:**
+- tkinter ist **kein pip-Paket** und kann nicht über `pip install` installiert werden
+- tkinter ist ein **System-Paket** das mit Python installiert werden muss
+- In Ubuntu/Debian: `sudo apt install python3-tk`
+- In Fedora/RHEL: `sudo dnf install python3-tkinter`
+- Daher steht tkinter **nicht** in `requirements.txt`
+
+**Warum passiert dieser Fehler?**
+- GitHub Actions Runner haben tkinter standardmäßig installiert
+- Zusätzliche System-Pakete werden über `sudo apt install` installiert
+- pip versucht tkinter zu installieren (fehlschlägt erwartungsgemäß)
+
 ### Berechtigung pro Workflow:
 
 1. **CI/CD Pipeline**: `contents: read`
@@ -271,6 +285,7 @@ Nach dem ersten Release aktualisieren Sie die Badge-URLs im README.md:
 - **"pre-commit-hooks-safety" Fehler**: Wurde durch lokale safety Installation ersetzt
 - **"Python version X.X was not found"**: Python-Version aktualisiert auf 3.8+ (3.6/3.7 nicht mehr verfügbar)
 - **"Resource not accessible by integration"**: Fehlende Berechtigungen - Workflow wurde korrigiert
+- **"Could not find a version that satisfies the requirement tkinter"**: tkinter ist ein System-Paket - wurde korrigiert
 
 ### GitHub Actions Limits
 - **Free Tier**: 2.000 Minuten/Monat für öffentliche Repositories

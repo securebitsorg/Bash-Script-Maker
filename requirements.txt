@@ -1,5 +1,5 @@
 # Core dependencies
-tkinter
+# tkinter wird über System-Paketmanager installiert (python3-tk)
 
 # Development dependencies (optional)
 pytest>=6.0.0
