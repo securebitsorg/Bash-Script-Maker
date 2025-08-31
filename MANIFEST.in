@@ -3,6 +3,7 @@ include LICENSE
 include VERSION
 include requirements.txt
 include packages.txt
+include *.py
 include *.sh
 include *.desktop
 recursive-include docs *.md

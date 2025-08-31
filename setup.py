@@ -51,7 +51,8 @@ setup(
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
     url="https://github.com/yourusername/bash-script-maker",  # Update with your GitHub URL
-    packages=find_packages(),
+    license="MIT",
+    packages=[],
     py_modules=["bash_script_maker", "syntax_highlighter"],
     include_package_data=True,
     install_requires=REQUIREMENTS,
@@ -74,7 +75,7 @@ setup(
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "Intended Audience :: End Users/Desktop",
-        "License :: OSI Approved :: MIT License",
+        "License :: OSI Approved :: MIT",
         "Operating System :: POSIX :: Linux",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.8",
