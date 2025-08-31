@@ -262,5 +262,10 @@ jobs:
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        # Create an initial tag if no tags are present
+        if ! git describe --tags --abbrev=0; then
+          git tag v0.1.0
+          git push origin v0.1.0
+        fi
         semantic-release publish
 # Finish
