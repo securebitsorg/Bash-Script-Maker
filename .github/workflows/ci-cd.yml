@@ -140,7 +140,8 @@ jobs:
         python -m twine upload dist/*
 
     # Hinweis: Ersetzen Sie 'IhrGithubBenutzername' durch Ihren tatsächlichen GitHub-Benutzernamen.
-    # Stellen Sie sicher, dass das PyPI-Token als Umgebungsvariable (z.B. PYPI_API_TOKEN) im Workflow oder als Secret gesetzt ist
+    # Stellen Sie sicher, dass das PyPI-Token als Umgebungsvariable (z.B. 
+    ) im Workflow oder als Secret gesetzt ist
 
     - name: Publish to GitHub Packages
       if: github.repository_owner == 'yourusername'  # Ändern Sie dies zu Ihrem GitHub-Benutzernamen
