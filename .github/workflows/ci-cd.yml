@@ -41,32 +41,29 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pytest pytest-cov flake8 black mypyRun python -m build
-* Creating isolated environment: venv+pip...
-* Installing packages in isolated environment:
-  - setuptools>=61.0
-  - wheel
-* Getting build dependencies for sdist...
-/tmp/build-env-mnny305u/lib/python3.9/site-packages/setuptools/config/_apply_pyprojecttoml.py:82: SetuptoolsDeprecationWarning: `project.license` as a TOML table is deprecated
-!!
-        ********************************************************************************
-        Please use a simple string containing a SPDX expression for `project.license`. You can also use `project.license-files`. (Both options available on setuptools>=77.0.0).
-        By 2026-Feb-18, you need to update your project and remove deprecated calls
-        or your builds will no longer be supported.
-        See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
-        ********************************************************************************
-!!
-  corresp(dist, value, root_dir)
-/tmp/build-env-mnny305u/lib/python3.9/site-packages/setuptools/config/_apply_pyprojecttoml.py:82: SetuptoolsWarning: `install_requires` overwritten in `pyproject.toml` (dependencies)
-  corresp(dist, value, root_dir)
-/tmp/build-env-mnny305u/lib/python3.9/site-packages/setuptools/config/_apply_pyprojecttoml.py:82: SetuptoolsWarning: `extras_require` overwritten in `pyproject.toml` (optional-dependencies)
-  corresp(dist, value, root_dir)
-/tmp/build-env-mnny305u/lib/python3.9/site-packages/setuptools/config/_apply_pyprojecttoml.py:61: SetuptoolsDeprecationWarning: License classifiers are deprecated.
-!!
-        ********************************************************************************
-        Please consider removing the following classifiers in favor of a SPDX license expression:
-        License :: OSI Approved :: MIT License
-        See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+        pip install pytest pytest-cov flake8 black mypy
+
+    - name: Lint with flake8
+      run: |
+        flake8 bash_script_maker.py syntax_highlighter.py --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 bash_script_maker.py syntax_highlighter.py --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+    - name: Type check with mypy
+      run: |
+        mypy bash_script_maker.py syntax_highlighter.py --ignore-missing-imports --no-error-summary --disable-error-code=import
+
+    - name: Format check with black
+      run: |
+        black --check --diff bash_script_maker.py syntax_highlighter.py
+
+    - name: Test with pytest
+      run: |
+        python -c "import bash_script_maker; import syntax_highlighter; print('Import test passed')"
+        python -c "import tkinter; print('Tkinter available')"
+        python -c "from bash_script_maker import BashScriptMaker; print('BashScriptMaker class available')"
+        python -c "from syntax_highlighter import BashScriptEditor; print('BashScriptEditor class available')"
+
+    - name: Generate coverage report
         ********************************************************************************
 !!
   dist._finalize_license_expression()
