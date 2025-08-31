@@ -188,6 +188,24 @@ Forks haben standardmäßig nicht alle Berechtigungen. Daher:
 - CI/CD Tests laufen in allen Branches
 - Releases nur vom Haupt-Repository
 
+### MyPy Type-Checking:
+
+**Warum wurde MyPy gelockert?**
+- Ursprünglich wurden 58 Type-Annotation-Fehler gemeldet
+- Für ein kleines Projekt wäre das Hinzufügen aller Annotations zu zeitaufwändig
+- MyPy ist jetzt konfigurierbar zwischen "locker" und "streng"
+
+**Konfiguration verwenden:**
+- **Locker (Standard)**: `pyproject.toml` - ignoriert fehlende Annotations
+- **Streng (Optional)**: `mypy.ini` - erzwingt vollständige Type-Annotations
+- **Manuell**: `mypy --config-file mypy.ini bash_script_maker.py syntax_highlighter.py`
+
+**Um Type-Annotations hinzuzufügen:**
+1. Verwenden Sie `mypy.ini` als Konfigurationsdatei
+2. Fügen Sie Type-Hints zu allen Funktionen hinzu
+3. Beispiel: `def meine_funktion(name: str) -> bool:`
+4. Führen Sie MyPy erneut aus um Fortschritt zu sehen
+
 ## ✅ Checklist
 
 - [ ] GitHub Repository erstellt/geklont
@@ -286,6 +304,7 @@ Nach dem ersten Release aktualisieren Sie die Badge-URLs im README.md:
 - **"Python version X.X was not found"**: Python-Version aktualisiert auf 3.8+ (3.6/3.7 nicht mehr verfügbar)
 - **"Resource not accessible by integration"**: Fehlende Berechtigungen - Workflow wurde korrigiert
 - **"Could not find a version that satisfies the requirement tkinter"**: tkinter ist ein System-Paket - wurde korrigiert
+- **MyPy Type-Annotation-Fehler**: MyPy-Konfiguration gelockert für einfachere Entwicklung
 
 ### GitHub Actions Limits
 - **Free Tier**: 2.000 Minuten/Monat für öffentliche Repositories

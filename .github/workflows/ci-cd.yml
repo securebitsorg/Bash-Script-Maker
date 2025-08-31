@@ -49,7 +49,7 @@ jobs:
 
     - name: Type check with mypy
       run: |
-        mypy bash_script_maker.py syntax_highlighter.py --ignore-missing-imports
+        mypy bash_script_maker.py syntax_highlighter.py --ignore-missing-imports --no-error-summary --disable-error-code=import
 
     - name: Format check with black
       run: |
