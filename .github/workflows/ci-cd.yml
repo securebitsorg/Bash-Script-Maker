@@ -1,0 +1,248 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  release:
+    types: [published]
+
+env:
+  PYTHON_VERSION: "3.9"
+
+jobs:
+  # Test-Job für verschiedene Python-Versionen
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11"]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y python3-tk python3-pip zenity xterm
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov flake8 black mypy
+
+    - name: Lint with flake8
+      run: |
+        flake8 bash_script_maker.py syntax_highlighter.py --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 bash_script_maker.py syntax_highlighter.py --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+    - name: Type check with mypy
+      run: |
+        mypy bash_script_maker.py syntax_highlighter.py --ignore-missing-imports
+
+    - name: Format check with black
+      run: |
+        black --check --diff bash_script_maker.py syntax_highlighter.py
+
+    - name: Test with pytest
+      run: |
+        python -c "import bash_script_maker; import syntax_highlighter; print('Import test passed')"
+        python -c "import tkinter; print('Tkinter available')"
+
+    - name: Generate coverage report
+      run: |
+        python -m pytest --cov=bash_script_maker --cov=syntax_highlighter --cov-report=xml
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        fail_ci_if_error: false
+
+  # Build-Job für Package-Erstellung
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install build dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build twine wheel setuptools
+
+    - name: Build package
+      run: python -m build
+
+    - name: Check package
+      run: |
+        python -m twine check dist/*
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: python-package
+        path: dist/
+        retention-days: 30
+
+  # Release-Job für automatische Releases
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'release' && github.event.action == 'published'
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build twine
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: python-package
+        path: dist/
+
+    - name: Publish to PyPI
+      if: github.repository_owner == 'yourusername'  # Ändern Sie dies zu Ihrem GitHub-Benutzernamen
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+      run: |
+        python -m twine upload dist/*
+
+    - name: Publish to GitHub Packages
+      if: github.repository_owner == 'yourusername'  # Ändern Sie dies zu Ihrem GitHub-Benutzernamen
+      env:
+        TWINE_USERNAME: ${{ github.actor }}
+        TWINE_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        python -m twine upload --repository-url https://upload.pypi.org/legacy/ dist/*
+
+  # Documentation-Job
+  docs:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install documentation dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pdoc3
+
+    - name: Generate documentation
+      run: |
+        mkdir -p docs
+        pdoc3 --html --output-dir docs bash_script_maker syntax_highlighter
+
+    - name: Upload documentation
+      uses: actions/upload-artifact@v3
+      with:
+        name: documentation
+        path: docs/
+        retention-days: 30
+
+  # Docker-Image erstellen (optional)
+  docker:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: |
+          ghcr.io/${{ github.repository }}:latest
+          ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+  # Security-Scan
+  security:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Run Bandit security linter
+      uses: PyCQA/bandit-action@v1
+      with:
+        path: "."
+        options: "-r"
+        ignore-noses: true
+
+    - name: Run Safety check
+      uses: Lucas-C/pre-commit-hooks-safety@0.1.1
+      with:
+        files: requirements.txt
+
+  # Automatisches Versionierung und Release-Erstellung
+  version-and-release:
+    runs-on: ubuntu-latest
+    needs: [test, build, security]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install semantic-release
+      run: |
+        python -m pip install --upgrade pip
+        pip install python-semantic-release
+
+    - name: Semantic Release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        semantic-release publish

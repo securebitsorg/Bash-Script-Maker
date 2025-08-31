@@ -1,0 +1,243 @@
+#!/bin/bash
+# Universelles Installationsscript für Bash-Script-Maker
+# Erkennt automatisch den verfügbaren Paketmanager
+
+echo "=== Bash-Script-Maker - Universelle Installation ==="
+echo "Dieses Script erkennt automatisch Ihren Paketmanager und installiert alle Abhängigkeiten."
+echo ""
+
+# Farbcodes für bessere Lesbarkeit
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Funktion für farbige Ausgabe
+print_status() {
+    echo -e "${BLUE}[INFO]${NC} $1"
+}
+
+print_success() {
+    echo -e "${GREEN}[SUCCESS]${NC} $1"
+}
+
+print_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+print_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+# Funktion zur Erkennung des Paketmanagers
+detect_package_manager() {
+    print_status "Erkenne Paketmanager..."
+
+    if command -v apt &> /dev/null; then
+        echo "apt (Ubuntu/Debian)"
+        PACKAGE_MANAGER="apt"
+        return 0
+    elif command -v dnf &> /dev/null; then
+        echo "dnf (Fedora/RHEL)"
+        PACKAGE_MANAGER="dnf"
+        return 0
+    elif command -v yum &> /dev/null; then
+        echo "yum (ältere Fedora/RHEL)"
+        PACKAGE_MANAGER="yum"
+        return 0
+    elif command -v pacman &> /dev/null; then
+        echo "pacman (Arch Linux)"
+        PACKAGE_MANAGER="pacman"
+        return 0
+    elif command -v zypper &> /dev/null; then
+        echo "zypper (openSUSE)"
+        PACKAGE_MANAGER="zypper"
+        return 0
+    elif command -v emerge &> /dev/null; then
+        echo "emerge (Gentoo)"
+        PACKAGE_MANAGER="emerge"
+        return 0
+    else
+        print_error "Kein unterstützter Paketmanager gefunden!"
+        print_warning "Unterstützte Paketmanager: apt, dnf, yum, pacman, zypper, emerge"
+        echo ""
+        print_status "Für manuelle Installation siehe packages.txt oder README.md"
+        exit 1
+    fi
+}
+
+# Funktion zur Installation mit apt
+install_apt() {
+    print_status "Aktualisiere Paketliste..."
+    if ! sudo apt update; then
+        print_error "Fehler beim Aktualisieren der Paketliste."
+        return 1
+    fi
+
+    print_status "Installiere Pakete..."
+    if sudo apt install -y python3 python3-tk python3-pip zenity xterm; then
+        print_success "Pakete erfolgreich installiert."
+        return 0
+    else
+        print_error "Fehler bei der Installation."
+        return 1
+    fi
+}
+
+# Funktion zur Installation mit dnf
+install_dnf() {
+    print_status "Installiere Pakete..."
+    if sudo dnf install -y python3 python3-tkinter python3-pip zenity xterm; then
+        print_success "Pakete erfolgreich installiert."
+        return 0
+    else
+        print_error "Fehler bei der Installation."
+        return 1
+    fi
+}
+
+# Funktion zur Installation mit yum
+install_yum() {
+    print_status "Installiere Pakete..."
+    if sudo yum install -y python3 python3-tkinter python3-pip zenity xterm; then
+        print_success "Pakete erfolgreich installiert."
+        return 0
+    else
+        print_error "Fehler bei der Installation."
+        return 1
+    fi
+}
+
+# Funktion zur Installation mit pacman
+install_pacman() {
+    print_status "Installiere Pakete..."
+    if sudo pacman -S --noconfirm python python-tk python-pip zenity xterm; then
+        print_success "Pakete erfolgreich installiert."
+        return 0
+    else
+        print_error "Fehler bei der Installation."
+        return 1
+    fi
+}
+
+# Funktion zur Installation mit zypper
+install_zypper() {
+    print_status "Installiere Pakete..."
+    if sudo zypper install -y python3 python3-tk python3-pip zenity xterm; then
+        print_success "Pakete erfolgreich installiert."
+        return 0
+    else
+        print_error "Fehler bei der Installation."
+        return 1
+    fi
+}
+
+# Funktion zur Installation mit emerge
+install_emerge() {
+    print_status "Installiere Pakete..."
+    if sudo emerge dev-lang/python dev-python/tkinter dev-python/pip x11-misc/zenity x11-terms/xterm; then
+        print_success "Pakete erfolgreich installiert."
+        return 0
+    else
+        print_error "Fehler bei der Installation."
+        return 1
+    fi
+}
+
+# Hauptinstallationsfunktion
+main_installation() {
+    print_status "Starte Installation für $PACKAGE_MANAGER..."
+
+    case $PACKAGE_MANAGER in
+        apt)
+            install_apt
+            ;;
+        dnf)
+            install_dnf
+            ;;
+        yum)
+            install_yum
+            ;;
+        pacman)
+            install_pacman
+            ;;
+        zypper)
+            install_zypper
+            ;;
+        emerge)
+            install_emerge
+            ;;
+        *)
+            print_error "Unbekannter Paketmanager: $PACKAGE_MANAGER"
+            return 1
+            ;;
+    esac
+}
+
+# Verifizierungsfunktion
+verify_installation() {
+    print_status "Überprüfe Installation..."
+
+    # Python-Version
+    if command -v python3 &> /dev/null; then
+        PYTHON_VERSION=$(python3 --version 2>&1 | cut -d' ' -f2)
+        print_success "Python 3 gefunden: $PYTHON_VERSION"
+    else
+        print_error "Python 3 nicht gefunden!"
+        return 1
+    fi
+
+    # Tkinter
+    if python3 -c "import tkinter; print('Tkinter OK')" &> /dev/null; then
+        print_success "Tkinter verfügbar"
+    else
+        print_error "Tkinter nicht verfügbar!"
+        return 1
+    fi
+
+    # Zenity
+    if command -v zenity &> /dev/null; then
+        print_success "Zenity verfügbar"
+    else
+        print_error "Zenity nicht verfügbar!"
+        return 1
+    fi
+
+    return 0
+}
+
+# Hauptprogramm
+print_status "Erkannter Paketmanager: $(detect_package_manager)"
+
+echo ""
+read -p "Möchten Sie fortfahren? (j/N): " -n 1 -r
+echo ""
+if [[ ! $REPLY =~ ^[Jj]$ ]]; then
+    print_warning "Installation abgebrochen."
+    exit 1
+fi
+
+# Installation durchführen
+if main_installation; then
+    echo ""
+    if verify_installation; then
+        echo ""
+        print_success "=== INSTALLATION ERFOLGREICH ABGESCHLOSSEN ==="
+        print_status "Sie können Bash-Script-Maker jetzt starten mit:"
+        echo "  cd $(pwd)"
+        echo "  ./start.sh"
+        echo ""
+        print_status "Oder direkt mit:"
+        echo "  python3 bash_script_maker.py"
+        echo ""
+        print_status "Viel Spaß mit Bash-Script-Maker! 🚀"
+    else
+        print_error "Installation unvollständig. Überprüfen Sie die Fehlermeldungen oben."
+        exit 1
+    fi
+else
+    print_error "Installation fehlgeschlagen."
+    print_status "Für Hilfe siehe packages.txt oder README.md"
+    exit 1
+fi

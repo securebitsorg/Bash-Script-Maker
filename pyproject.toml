@@ -1,0 +1,133 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bash-script-maker"
+dynamic = ["version"]
+description = "Ein GUI-Programm zur Erstellung von Bash-Scripts mit visueller Unterstützung"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Marc", email = "your-email@example.com"},
+]
+maintainers = [
+    {name = "Marc", email = "your-email@example.com"},
+]
+keywords = ["bash", "script", "gui", "editor", "generator", "linux"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Utilities",
+    "Topic :: Text Editors :: Integrated Development Environments (IDE)",
+    "Topic :: Software Development :: Code Generators",
+]
+requires-python = ">=3.6"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0.0",
+    "pytest-cov>=2.10.0",
+    "flake8>=3.8.0",
+    "black>=21.0.0",
+    "mypy>=0.800",
+    "tox>=3.20.0",
+    "twine>=3.0.0",
+    "build>=0.7.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/bash-script-maker"
+Documentation = "https://github.com/yourusername/bash-script-maker#readme"
+Repository = "https://github.com/yourusername/bash-script-maker"
+"Bug Reports" = "https://github.com/yourusername/bash-script-maker/issues"
+Changelog = "https://github.com/yourusername/bash-script-maker/blob/main/CHANGELOG.md"
+
+[project.scripts]
+bash-script-maker = "bash_script_maker:main"
+
+[tool.setuptools]
+packages = ["bash_script_maker"]
+py-modules = ["bash_script_maker", "syntax_highlighter"]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = {file = "VERSION"}
+
+[tool.black]
+line-length = 88
+target-version = ['py36', 'py37', 'py38', 'py39', 'py310', 'py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.mypy]
+python_version = "3.6"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+    "tkinter.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --strict-markers --disable-warnings"
+testpaths = [
+    "tests",
+]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+
+[tool.coverage.run]
+source = ["bash_script_maker", "syntax_highlighter"]
+omit = [
+    "*/tests/*",
+    "*/test_*.py",
+    "setup.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]
