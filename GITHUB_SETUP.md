@@ -241,6 +241,8 @@ Nach dem ersten Release aktualisieren Sie die Badge-URLs im README.md:
 - **"Secret not found"**: Überprüfen Sie die Schreibweise (alles Großbuchstaben)
 - **"Invalid token"**: Token könnte abgelaufen sein - neuen Token erstellen
 - **"Permission denied"**: Token hat nicht die richtigen Berechtigungen
+- **"Unable to resolve action"**: GitHub Action Version existiert nicht - Workflow wurde korrigiert
+- **"pre-commit-hooks-safety" Fehler**: Wurde durch lokale safety Installation ersetzt
 
 ### GitHub Actions Limits
 - **Free Tier**: 2.000 Minuten/Monat für öffentliche Repositories

@@ -39,11 +39,15 @@ repos:
         additional_dependencies: [types-all]
         args: [--ignore-missing-imports]
 
-  - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
-    rev: v1.3.1
+  - repo: local
     hooks:
-      - id: python-safety-dependencies-check
+      - id: safety-check
+        name: Safety check
+        entry: safety
+        language: system
         files: requirements\.txt
+        args: [check, --file, requirements.txt]
+        pass_filenames: false
 
   - repo: https://github.com/PyCQA/bandit
     rev: 1.7.5
