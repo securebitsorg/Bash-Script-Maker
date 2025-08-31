@@ -41,7 +41,7 @@ jobs:
         safety check --file requirements.txt || echo "Safety check completed with warnings"
 
     - name: Upload security results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: security-scan-results
