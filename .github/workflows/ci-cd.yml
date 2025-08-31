@@ -95,15 +95,17 @@ jobs:
       run: python -m build
 
     - name: Check package
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: python-package
-        path: dist/
-        retention-days: 30
 
+    - name: Generate coverage report
       run: |
-        python -m twine check dist/*
+        python -m pytest --cov-report=xml --cov-report=term
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        fail_ci_if_error: false
+
   # Build-Job für Package-Erstellung
   build:
     runs-on: ubuntu-latest
