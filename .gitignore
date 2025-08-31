@@ -155,5 +155,6 @@ Thumbs.db
 *.sh.log
 test_results/
 .temp/
-
+.env
+Environments
 # Finish

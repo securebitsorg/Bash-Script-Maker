@@ -14,7 +14,7 @@ jobs:
     name: Security Scan
     runs-on: ubuntu-latest
     # Only run on main repository to avoid permission issues
-    if: github.repository_owner == 'yourusername' || github.event_name != 'pull_request'
+    if: github.repository_owner == 'securebitsorg' || github.event_name != 'pull_request'
 
     steps:
     - name: Checkout repository

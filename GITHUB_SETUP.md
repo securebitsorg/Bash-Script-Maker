@@ -31,7 +31,7 @@ Dieses Dokument erklärt, wie Sie GitHub Secrets für die CI/CD-Pipeline einrich
 ## 🚀 Schritt-für-Schritt Anleitung
 
 ### Schritt 1: Repository Settings öffnen
-1. Gehen Sie zu Ihrem GitHub Repository: `https://github.com/YOUR_USERNAME/bash-script-maker`
+1. Gehen Sie zu Ihrem GitHub Repository: `https://github.com/securebitsorg/bash-script-maker`
 2. Klicken Sie auf **Settings** (Zahnrad-Symbol)
 3. Scrollen Sie im linken Menü nach unten zu **Secrets and variables**
 4. Klicken Sie auf **Actions**
@@ -105,7 +105,7 @@ python -m twine upload --repository testpypi dist/*
 
 ### GitHub Actions Status
 - **Actions Tab**: Zeigt alle Workflow-Läufe
-- **Badge hinzufügen**: `![CI](https://github.com/YOUR_USERNAME/bash-script-maker/workflows/CI/CD%20Pipeline/badge.svg)`
+- **Badge hinzufügen**: `![CI](https://github.com/securebitsorg/bash-script-maker/workflows/CI/CD%20Pipeline/badge.svg)`
 
 ### Logs analysieren
 1. Klicken Sie auf einen Workflow-Lauf
@@ -221,7 +221,7 @@ Forks haben standardmäßig nicht alle Berechtigungen. Daher:
 - **Locker (Standard)**: `pyproject.toml` - ignoriert fehlende Annotations
 - **Streng (Optional)**: `mypy.ini` - erzwingt vollständige Type-Annotations
 - **Manuell**: `mypy --config-file mypy.ini bash_script_maker.py syntax_highlighter.py`
-pypi-AgEIcHlwaS5vcmcCJGNhZjE2OWU5LTIwMjYtNGNiMi05MGFiLWFjMzU4ZDY1NzJhYgACKlszLCJjNjI5MThmZS1hOTUxLTRlYzQtOTQxZC1iNTI0YTQ2NGIyNGQiXQAABiBBiqC2L21OshSkdkDNaWHZQ3UMm2lCqL6ikfcx3KeCfw
+
 **Um Type-Annotations hinzuzufügen:**
 1. Verwenden Sie `mypy.ini` als Konfigurationsdatei
 2. Fügen Sie Type-Hints zu allen Funktionen hinzu
@@ -291,7 +291,7 @@ git commit -m "🎉 Initial commit: Bash-Script-Maker mit GitHub Actions CI/CD
 • Mehrere Linux-Distributionen unterstützt
 • Umfassende Test-Suite"
 git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/bash-script-maker.git
+git remote add origin https://github.com/securebitsorg/bash-script-maker.git
 git push -u origin main
 ```
 
@@ -306,7 +306,7 @@ git push -u origin main
 Nach dem ersten Release aktualisieren Sie die Badge-URLs im README.md:
 ```markdown
 # Ersetzen Sie 'yourusername' mit Ihrem GitHub-Benutzernamen
-[![CI/CD Pipeline](https://github.com/IHR_BENUTZERNAME/bash-script-maker/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/IHR_BENUTZERNAME/bash-script-maker/actions/workflows/ci-cd.yml)
+[![CI/CD Pipeline](https://github.com/securebitsorg/bash-script-maker/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/securebitsorg/bash-script-maker/actions/workflows/ci-cd.yml)
 ```
 
 ## 🚨 Wichtige Hinweise

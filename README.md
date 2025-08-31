@@ -216,9 +216,14 @@ Das Programm erstellt automatisch ein grundlegendes Script-Template:
 
 Dieses Projekt verwendet GitHub Actions für kontinuierliche Integration und Bereitstellung.
 
-> 📖 **Detaillierte Setup-Anleitung**: Siehe [GITHUB_SETUP.md](GITHUB_SETUP.md) für eine Schritt-für-Schritt Anleitung zum Einrichten der GitHub Secrets.
 
-### Automatische Workflows
+Check failure on line 144 in .github/workflows/ci-cd.yml
+GitHub Actions / .github/workflows/ci-cd.yml
+
+Invalid workflow file
+
+You have an error in your yaml syntax on line 144
+
 
 - **CI/CD Pipeline** (`.github/workflows/ci-cd.yml`):
   - Tests auf Python 3.6-3.11
@@ -276,7 +281,7 @@ Beiträge sind willkommen! Siehe [CONTRIBUTING.md](CONTRIBUTING.md) für detaill
 
 ### Schnellstart für Contributors:
 1. Fork das Repository
-2. `git clone https://github.com/YOUR_USERNAME/bash-script-maker.git`
+2. `git clone https://github.com/securebitsorg/bash-script-maker.git`
 3. `cd bash-script-maker && ./install.sh`
 4. `pip install -e ".[dev]"`
 5. `pre-commit install`

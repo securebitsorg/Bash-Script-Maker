@@ -57,5 +57,5 @@ Bitte lesen Sie [CONTRIBUTING.md](CONTRIBUTING.md) für Details zum Beitragen an
 ## Support
 
 Für Support und Fragen:
-- [GitHub Issues](https://github.com/yourusername/bash-script-maker/issues)
-- [Discussions](https://github.com/yourusername/bash-script-maker/discussions)
+- [GitHub Issues](https://github.com/securebitsorg/bash-script-maker/issues)
+- [Discussions](https://github.com/securebitsorg/bash-script-maker/discussions)

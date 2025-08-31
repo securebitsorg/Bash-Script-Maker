@@ -132,7 +132,7 @@ jobs:
         path: dist/
 
     - name: Publish to PyPI
-      if: github.repository_owner == 'IhrGithubBenutzername' && github.event_name == 'release' && github.event.action == 'published' && env.PYPI_API_TOKEN != ''
+      if: github.repository_owner == 'securebitsorg' && github.event_name == 'release' && github.event.action == 'published' && env.PYPI_API_TOKEN != ''
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ env.PYPI_API_TOKEN }}
@@ -140,11 +140,10 @@ jobs:
         python -m twine upload dist/*
 
     # Hinweis: Ersetzen Sie 'IhrGithubBenutzername' durch Ihren tatsächlichen GitHub-Benutzernamen.
-    # Stellen Sie sicher, dass das PyPI-Token als Umgebungsvariable (z.B. 
-    ) im Workflow oder als Secret gesetzt ist
+    # Stellen Sie sicher, dass das PyPI-Token als Secret gesetzt ist.
 
     - name: Publish to GitHub Packages
-      if: github.repository_owner == 'yourusername'  # Ändern Sie dies zu Ihrem GitHub-Benutzernamen
+      if: github.repository_owner == 'securebitsorg'  
       env:
         TWINE_USERNAME: ${{ github.actor }}
         TWINE_PASSWORD: ${{ secrets.GITHUB_TOKEN }}

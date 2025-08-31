@@ -47,11 +47,11 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/bash-script-maker"
-Documentation = "https://github.com/yourusername/bash-script-maker#readme"
-Repository = "https://github.com/yourusername/bash-script-maker"
-"Bug Reports" = "https://github.com/yourusername/bash-script-maker/issues"
-Changelog = "https://github.com/yourusername/bash-script-maker/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/securebitsorg/bash-script-maker"
+Documentation = "https://github.com/securebitsorg/bash-script-maker#readme"
+Repository = "https://github.com/securebitsorg/bash-script-maker"
+"Bug Reports" = "https://github.com/securebitsorg/bash-script-maker/issues"
+Changelog = "https://github.com/securebitsorg/bash-script-maker/blob/main/CHANGELOG.md"
 
 [project.scripts]
 bash-script-maker = "bash_script_maker:main"

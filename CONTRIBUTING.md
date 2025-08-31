@@ -13,7 +13,7 @@ Danke, dass Sie zu Bash-Script-Maker beitragen möchten! Wir freuen uns über al
 1. Fork das Repository
 2. Klonen Sie Ihren Fork:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/bash-script-maker.git
+   git clone https://github.com/securebitsorg/bash-script-maker.git
    cd bash-script-maker
    ```
 
@@ -152,8 +152,8 @@ Durch das Beitragen zu diesem Projekt stimmen Sie zu, dass Ihre Beiträge unter 
 ## Fragen?
 
 Bei Fragen:
-- Öffnen Sie ein [GitHub Issue](https://github.com/yourusername/bash-script-maker/issues)
-- Schreiben Sie in [GitHub Discussions](https://github.com/yourusername/bash-script-maker/discussions)
+- Öffnen Sie ein [GitHub Issue](https://github.com/securebitsorg/bash-script-maker/issues)
+- Schreiben Sie in [GitHub Discussions](https://github.com/securebitsorg/bash-script-maker/discussions)
 - Kontaktieren Sie die Maintainers
 
 Vielen Dank für Ihren Beitrag! 🚀

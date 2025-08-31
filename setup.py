@@ -50,7 +50,7 @@ setup(
     description="Ein GUI-Programm zur Erstellung von Bash-Scripts mit visueller Unterstützung",
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/bash-script-maker",  # Update with your GitHub URL
+    url="https://github.com/securebitsorg/bash-script-maker",  # Update with your GitHub URL
     license="MIT",
     packages=[],
     py_modules=["bash_script_maker", "syntax_highlighter"],
@@ -90,8 +90,8 @@ setup(
     keywords="bash script gui editor generator linux",
     python_requires=">=3.8",
     project_urls={
-        "Bug Reports": "https://github.com/yourusername/bash-script-maker/issues",
-        "Source": "https://github.com/yourusername/bash-script-maker",
-        "Documentation": "https://github.com/yourusername/bash-script-maker#readme",
+        "Bug Reports": "https://github.com/securebitsorg/bash-script-maker/issues",
+        "Source": "https://github.com/securebitsorg/bash-script-maker",
+        "Documentation": "https://github.com/securebitsorg/bash-script-maker#readme",
     },
 )
