@@ -56,7 +56,7 @@ Ein benutzerfreundliches GUI-Programm zur Erstellung von Bash-Scripts mit visuel
 ## Installation
 
 ### Voraussetzungen
-- Python 3.6 oder höher
+- Python 3.8 oder höher
 - Tkinter (GUI-Bibliothek)
 - Zenity (für Dialog-Funktionen)
 - Linux-Distribution mit apt, dnf, pacman oder ähnlichem Paketmanager

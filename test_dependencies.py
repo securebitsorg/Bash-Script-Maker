@@ -45,11 +45,11 @@ def main():
     # Test Python version
     total_tests += 1
     python_version = sys.version_info
-    if python_version >= (3, 6):
+    if python_version >= (3, 8):
         print(f"✅ Python Version {python_version.major}.{python_version.minor}.{python_version.micro}: OK")
         success_count += 1
     else:
-        print(f"❌ Python Version {python_version.major}.{python_version.minor}.{python_version.micro}: FAILED (requires 3.6+)")
+        print(f"❌ Python Version {python_version.major}.{python_version.minor}.{python_version.micro}: FAILED (requires 3.8+)")
 
     # Test core imports
     core_modules = [

@@ -149,14 +149,40 @@ Bei Problemen mit den Secrets:
 2. **PyPI Documentation**: [Using API tokens](https://pypi.org/help/#apitoken)
 3. **GitHub Community**: [GitHub Actions Forum](https://github.community/c/github-actions/41)
 
+## 🔐 GitHub Actions Berechtigungen
+
+### Warum werden Berechtigungen benötigt?
+
+GitHub Actions benötigt explizite Berechtigungen für bestimmte Operationen:
+
+- **`contents: read`** - Lesen von Repository-Inhalten
+- **`contents: write`** - Schreiben/Erstellen von Releases und Tags
+- **`security-events: write`** - Hochladen von CodeQL-Ergebnissen
+- **`actions: read`** - Lesen von Workflow-Informationen
+
+### Berechtigung pro Workflow:
+
+1. **CI/CD Pipeline**: `contents: read`
+2. **Release Job**: `contents: write`
+3. **CodeQL**: `security-events: write`
+4. **Version & Release**: `contents: write`
+
+### Problem bei Forks:
+
+Forks haben standardmäßig nicht alle Berechtigungen. Daher:
+- CodeQL läuft nur im Haupt-Repository
+- CI/CD Tests laufen in allen Branches
+- Releases nur vom Haupt-Repository
+
 ## ✅ Checklist
 
 - [ ] GitHub Repository erstellt/geklont
 - [ ] PyPI Account und API Token erstellt
 - [ ] `PYPI_API_TOKEN` Secret in GitHub gesetzt
 - [ ] `GITHUB_TOKEN` automatisch verfügbar
-- [ ] Erster Test-Push durchgeführt
+- [ ] Repository zu GitHub gepusht
 - [ ] CI/CD Pipeline erfolgreich gelaufen
+- [ ] CodeQL Security Scan funktioniert
 - [ ] Erstes Release erstellt
 - [ ] Badges zum README hinzugefügt
 
@@ -243,6 +269,8 @@ Nach dem ersten Release aktualisieren Sie die Badge-URLs im README.md:
 - **"Permission denied"**: Token hat nicht die richtigen Berechtigungen
 - **"Unable to resolve action"**: GitHub Action Version existiert nicht - Workflow wurde korrigiert
 - **"pre-commit-hooks-safety" Fehler**: Wurde durch lokale safety Installation ersetzt
+- **"Python version X.X was not found"**: Python-Version aktualisiert auf 3.8+ (3.6/3.7 nicht mehr verfügbar)
+- **"Resource not accessible by integration"**: Fehlende Berechtigungen - Workflow wurde korrigiert
 
 ### GitHub Actions Limits
 - **Free Tier**: 2.000 Minuten/Monat für öffentliche Repositories

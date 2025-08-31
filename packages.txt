@@ -101,7 +101,7 @@
 # =============================================================================
 
 # Wenn Sie Probleme haben, überprüfen Sie:
-# 1. Ihre Python-Version (muss 3.6+ sein)
+# 1. Ihre Python-Version (muss 3.8+ sein)
 # 2. Dass alle Pakete korrekt installiert sind
 # 3. Dass Sie in einer grafischen Umgebung arbeiten (nicht nur SSH)
 # 4. DISPLAY-Variable ist gesetzt (für entfernte Installationen)
