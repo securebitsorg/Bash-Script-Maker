@@ -221,7 +221,7 @@ Forks haben standardmäßig nicht alle Berechtigungen. Daher:
 - **Locker (Standard)**: `pyproject.toml` - ignoriert fehlende Annotations
 - **Streng (Optional)**: `mypy.ini` - erzwingt vollständige Type-Annotations
 - **Manuell**: `mypy --config-file mypy.ini bash_script_maker.py syntax_highlighter.py`
-
+pypi-AgEIcHlwaS5vcmcCJGNhZjE2OWU5LTIwMjYtNGNiMi05MGFiLWFjMzU4ZDY1NzJhYgACKlszLCJjNjI5MThmZS1hOTUxLTRlYzQtOTQxZC1iNTI0YTQ2NGIyNGQiXQAABiBBiqC2L21OshSkdkDNaWHZQ3UMm2lCqL6ikfcx3KeCfw
 **Um Type-Annotations hinzuzufügen:**
 1. Verwenden Sie `mypy.ini` als Konfigurationsdatei
 2. Fügen Sie Type-Hints zu allen Funktionen hinzu
@@ -340,3 +340,5 @@ Nach dem ersten Release aktualisieren Sie die Badge-URLs im README.md:
 ---
 
 **Hinweis:** Secrets sind für alle Repository-Typen kostenlos verfügbar. Bei privaten Repositorys haben Sie jedoch mehr Minuten für GitHub Actions zur Verfügung.
+
+**Viel Spaß beim ausprobieren!**
