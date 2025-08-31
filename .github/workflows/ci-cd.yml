@@ -132,10 +132,10 @@ jobs:
         path: dist/
 
     - name: Publish to PyPI
-      if: github.repository_owner == 'securebitsorg' && github.event_name == 'release' && github.event.action == 'published' && env.PYPIAPITOKEN != ''
+      if: github.repository_owner == 'securebitsorg' && github.event_name == 'release' && github.event.action == 'published' && secrets.PYPI_API_TOKEN != ''
       env:
         TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ env.PYPIAPITOKEN }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
       run: |
         python -m twine upload dist/*
 
@@ -270,5 +270,5 @@ jobs:
           git tag v0.1.0
           git push origin v0.1.0
         fi
-        semantic-release publish
+        semantic-release publish -D upload_to_pypi=false
 # Finish
