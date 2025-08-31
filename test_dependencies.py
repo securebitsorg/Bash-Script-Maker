@@ -8,6 +8,7 @@ import sys
 import subprocess
 import importlib
 
+
 def run_command(cmd, description):
     """Run a command and return success status"""
     try:
@@ -23,6 +24,7 @@ def run_command(cmd, description):
         print(f"❌ {description}: ERROR - {str(e)}")
         return False
 
+
 def test_import(module_name, description):
     """Test if a module can be imported"""
     try:
@@ -36,6 +38,7 @@ def test_import(module_name, description):
         print(f"⚠️  {description}: WARNING - {str(e)}")
         return True
 
+
 def main():
     print("=== Bash-Script-Maker Dependency Test ===\n")
 
@@ -46,10 +49,14 @@ def main():
     total_tests += 1
     python_version = sys.version_info
     if python_version >= (3, 8):
-        print(f"✅ Python Version {python_version.major}.{python_version.minor}.{python_version.micro}: OK")
+        print(
+            f"✅ Python Version {python_version.major}.{python_version.minor}.{python_version.micro}: OK"
+        )
         success_count += 1
     else:
-        print(f"❌ Python Version {python_version.major}.{python_version.minor}.{python_version.micro}: FAILED (requires 3.8+)")
+        print(
+            f"❌ Python Version {python_version.major}.{python_version.minor}.{python_version.micro}: FAILED (requires 3.8+)"
+        )
 
     # Test core imports
     core_modules = [
@@ -123,6 +130,7 @@ def main():
     else:
         print("❌ Critical components are missing. Please check the installation.")
         return 1
+
 
 if __name__ == "__main__":
     sys.exit(main())

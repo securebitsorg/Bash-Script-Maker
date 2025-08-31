@@ -225,9 +225,10 @@ Dieses Projekt verwendet GitHub Actions für kontinuierliche Integration und Ber
   - Docker-Image-Erstellung
   - Dokumentationsgenerierung
 
-- **CodeQL Security** (`.github/workflows/codeql-analysis.yml`):
-  - Wöchentliche Security-Scans
-  - Automatische Schwachstellenerkennung
+- **Security Scan** (`.github/workflows/security-scan.yml`):
+  - Security-Scans mit Bandit und Safety
+  - Funktioniert in Forks und Haupt-Repository
+  - Keine speziellen Berechtigungen erforderlich
 
 - **Manueller Release** (`.github/workflows/manual-release.yml`):
   - Manuelle Versionserstellung

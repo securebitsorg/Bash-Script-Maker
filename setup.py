@@ -8,29 +8,35 @@ from setuptools import setup, find_packages
 import os
 import re
 
+
 # Read version from VERSION file
 def read_version():
-    version_file = os.path.join(os.path.dirname(__file__), 'VERSION')
+    version_file = os.path.join(os.path.dirname(__file__), "VERSION")
     if os.path.exists(version_file):
-        with open(version_file, 'r', encoding='utf-8') as f:
+        with open(version_file, "r", encoding="utf-8") as f:
             return f.read().strip()
-    return '0.1.0'
+    return "0.1.0"
+
 
 # Read README for long description
 def read_readme():
-    readme_file = os.path.join(os.path.dirname(__file__), 'README.md')
+    readme_file = os.path.join(os.path.dirname(__file__), "README.md")
     if os.path.exists(readme_file):
-        with open(readme_file, 'r', encoding='utf-8') as f:
+        with open(readme_file, "r", encoding="utf-8") as f:
             return f.read()
-    return ''
+    return ""
+
 
 # Read requirements
 def read_requirements():
-    req_file = os.path.join(os.path.dirname(__file__), 'requirements.txt')
+    req_file = os.path.join(os.path.dirname(__file__), "requirements.txt")
     if os.path.exists(req_file):
-        with open(req_file, 'r', encoding='utf-8') as f:
-            return [line.strip() for line in f if line.strip() and not line.startswith('#')]
+        with open(req_file, "r", encoding="utf-8") as f:
+            return [
+                line.strip() for line in f if line.strip() and not line.startswith("#")
+            ]
     return []
+
 
 VERSION = read_version()
 LONG_DESCRIPTION = read_readme()
@@ -46,22 +52,22 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/yourusername/bash-script-maker",  # Update with your GitHub URL
     packages=find_packages(),
-    py_modules=['bash_script_maker', 'syntax_highlighter'],
+    py_modules=["bash_script_maker", "syntax_highlighter"],
     include_package_data=True,
     install_requires=REQUIREMENTS,
     extras_require={
-        'dev': [
-            'pytest>=6.0.0',
-            'pytest-cov>=2.10.0',
-            'flake8>=3.8.0',
-            'black>=21.0.0',
-            'mypy>=0.800',
-            'tox>=3.20.0',
+        "dev": [
+            "pytest>=6.0.0",
+            "pytest-cov>=2.10.0",
+            "flake8>=3.8.0",
+            "black>=21.0.0",
+            "mypy>=0.800",
+            "tox>=3.20.0",
         ],
     },
     entry_points={
-        'console_scripts': [
-            'bash-script-maker=bash_script_maker:main',
+        "console_scripts": [
+            "bash-script-maker=bash_script_maker:main",
         ],
     },
     classifiers=[

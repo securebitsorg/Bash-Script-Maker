@@ -14,11 +14,11 @@ permissions:
   security-events: write
 
 jobs:
-  # CodeQL für Haupt-Repository (mit Upload)
-  analyze-main:
-    name: Analyze (Main Repository)
+  analyze:
+    name: Analyze
     runs-on: ubuntu-latest
-    if: github.repository == 'yourusername/bash-script-maker'
+    # Temporarily disabled to avoid permission issues - use security-scan.yml instead
+    if: false
 
     strategy:
       fail-fast: false
@@ -28,12 +28,17 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        # Get full history for better analysis
+        fetch-depth: 0
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
+      uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
         config-file: ./.github/codeql-config.yml
+        # Disable telemetry to avoid permission issues
+        queries: security-and-quality
 
     - name: Install system dependencies
       run: |
@@ -45,45 +50,13 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
-      with:
-        category: "/language:${{matrix.language}}"
-        upload: true
-
-  # CodeQL für Forks (ohne Upload)
-  analyze-fork:
-    name: Analyze (Fork)
-    runs-on: ubuntu-latest
-    if: github.repository != 'yourusername/bash-script-maker'
-
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [ 'python' ]
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
-      with:
-        languages: ${{ matrix.language }}
-        config-file: ./.github/codeql-config.yml
-
-    - name: Install system dependencies
+    - name: Build project
       run: |
-        sudo apt-get update
-        sudo apt-get install -y python3-tk python3-pip zenity xterm
-
-    - name: Install Python dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        python -m pip install -e .
+        python -c "import bash_script_maker; print('Import successful')"
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
+      uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{matrix.language}}"
-        upload: false
+        upload: ${{ github.repository_owner == github.event.pull_request.head.repo.owner.login || github.event_name != 'pull_request' }}

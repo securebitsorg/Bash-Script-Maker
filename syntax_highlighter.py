@@ -10,6 +10,7 @@ import re
 import os
 import glob
 
+
 class BashAutocomplete:
     """Autovervollständigung für Bash-Scripts"""
 
@@ -24,53 +25,226 @@ class BashAutocomplete:
         # Bash-Befehle und Schlüsselwörter
         self.bash_commands = {
             # Grundlegende Befehle
-            'echo', 'printf', 'read', 'exit', 'return', 'cd', 'pwd', 'ls', 'cp', 'mv', 'rm', 'mkdir', 'rmdir',
-            'touch', 'cat', 'grep', 'sed', 'awk', 'find', 'chmod', 'chown', 'ps', 'kill', 'killall', 'top',
-            'df', 'du', 'free', 'uname', 'whoami', 'id', 'groups', 'passwd', 'su', 'sudo', 'which', 'whereis',
-            'locate', 'updatedb', 'tar', 'gzip', 'gunzip', 'bzip2', 'bunzip2', 'zip', 'unzip', 'wget', 'curl',
-
+            "echo",
+            "printf",
+            "read",
+            "exit",
+            "return",
+            "cd",
+            "pwd",
+            "ls",
+            "cp",
+            "mv",
+            "rm",
+            "mkdir",
+            "rmdir",
+            "touch",
+            "cat",
+            "grep",
+            "sed",
+            "awk",
+            "find",
+            "chmod",
+            "chown",
+            "ps",
+            "kill",
+            "killall",
+            "top",
+            "df",
+            "du",
+            "free",
+            "uname",
+            "whoami",
+            "id",
+            "groups",
+            "passwd",
+            "su",
+            "sudo",
+            "which",
+            "whereis",
+            "locate",
+            "updatedb",
+            "tar",
+            "gzip",
+            "gunzip",
+            "bzip2",
+            "bunzip2",
+            "zip",
+            "unzip",
+            "wget",
+            "curl",
             # Erweiterte Befehle
-            'head', 'tail', 'sort', 'uniq', 'wc', 'cut', 'paste', 'tr', 'diff', 'patch', 'comm', 'join',
-            'xargs', 'tee', 'yes', 'seq', 'bc', 'dc', 'expr', 'let', 'declare', 'export', 'unset', 'set',
-            'shift', 'getopts', 'source', 'eval', 'exec', 'trap', 'wait', 'jobs', 'fg', 'bg', 'disown',
-
+            "head",
+            "tail",
+            "sort",
+            "uniq",
+            "wc",
+            "cut",
+            "paste",
+            "tr",
+            "diff",
+            "patch",
+            "comm",
+            "join",
+            "xargs",
+            "tee",
+            "yes",
+            "seq",
+            "bc",
+            "dc",
+            "expr",
+            "let",
+            "declare",
+            "export",
+            "unset",
+            "set",
+            "shift",
+            "getopts",
+            "source",
+            "eval",
+            "exec",
+            "trap",
+            "wait",
+            "jobs",
+            "fg",
+            "bg",
+            "disown",
             # Systembefehle
-            'mount', 'umount', 'fdisk', 'mkfs', 'fsck', 'dd', 'mkswap', 'swapon', 'swapoff', 'sysctl',
-            'modprobe', 'lsmod', 'insmod', 'rmmod', 'lspci', 'lsusb', 'ifconfig', 'ip', 'route', 'netstat',
-            'ss', 'ping', 'traceroute', 'nslookup', 'dig', 'host', 'hostname', 'date', 'cal', 'uptime',
-
+            "mount",
+            "umount",
+            "fdisk",
+            "mkfs",
+            "fsck",
+            "dd",
+            "mkswap",
+            "swapon",
+            "swapoff",
+            "sysctl",
+            "modprobe",
+            "lsmod",
+            "insmod",
+            "rmmod",
+            "lspci",
+            "lsusb",
+            "ifconfig",
+            "ip",
+            "route",
+            "netstat",
+            "ss",
+            "ping",
+            "traceroute",
+            "nslookup",
+            "dig",
+            "host",
+            "hostname",
+            "date",
+            "cal",
+            "uptime",
             # Paketverwaltung
-            'apt', 'apt-get', 'dpkg', 'rpm', 'yum', 'dnf', 'pacman', 'zypper', 'snap', 'flatpak',
-
+            "apt",
+            "apt-get",
+            "dpkg",
+            "rpm",
+            "yum",
+            "dnf",
+            "pacman",
+            "zypper",
+            "snap",
+            "flatpak",
             # Text-Editoren
-            'vi', 'vim', 'nano', 'emacs', 'gedit', 'kate', 'code', 'subl',
-
+            "vi",
+            "vim",
+            "nano",
+            "emacs",
+            "gedit",
+            "kate",
+            "code",
+            "subl",
             # Entwicklungstools
-            'gcc', 'g++', 'make', 'cmake', 'git', 'svn', 'hg', 'docker', 'podman', 'kubectl'
+            "gcc",
+            "g++",
+            "make",
+            "cmake",
+            "git",
+            "svn",
+            "hg",
+            "docker",
+            "podman",
+            "kubectl",
         }
 
         # Bash-Schlüsselwörter
         self.bash_keywords = {
-            'if', 'then', 'else', 'elif', 'fi', 'for', 'while', 'until', 'do', 'done', 'case', 'esac',
-            'select', 'function', 'local', 'readonly', 'declare', 'typeset', 'export', 'unset', 'break',
-            'continue', 'return', 'exit', 'trap', 'eval', 'exec', 'source', 'alias', 'unalias', 'builtin',
-            'command', 'type', 'hash', 'help', 'history', 'fc', 'bind', 'set', 'shopt', 'caller', 'false', 'true'
+            "if",
+            "then",
+            "else",
+            "elif",
+            "fi",
+            "for",
+            "while",
+            "until",
+            "do",
+            "done",
+            "case",
+            "esac",
+            "select",
+            "function",
+            "local",
+            "readonly",
+            "declare",
+            "typeset",
+            "export",
+            "unset",
+            "break",
+            "continue",
+            "return",
+            "exit",
+            "trap",
+            "eval",
+            "exec",
+            "source",
+            "alias",
+            "unalias",
+            "builtin",
+            "command",
+            "type",
+            "hash",
+            "help",
+            "history",
+            "fc",
+            "bind",
+            "set",
+            "shopt",
+            "caller",
+            "false",
+            "true",
         }
 
         # Häufige Optionen für Befehle
         self.command_options = {
-            'ls': ['-l', '-a', '-h', '-la', '-lh', '-1', '-R', '-t', '-S', '-X'],
-            'cp': ['-r', '-i', '-v', '-p', '-u', '-n', '--backup'],
-            'mv': ['-i', '-v', '-u', '-n', '--backup'],
-            'rm': ['-i', '-r', '-f', '-v', '--interactive=never'],
-            'mkdir': ['-p', '-v', '-m'],
-            'chmod': ['-R', '-v', '+x', '+r', '+w', '755', '644'],
-            'chown': ['-R', '-v', '--reference'],
-            'grep': ['-i', '-v', '-r', '-n', '-l', '-c', '--color'],
-            'find': ['-name', '-type', '-exec', '-delete', '-mtime', '-size'],
-            'ps': ['aux', 'ef', '-p', '-u', '-C'],
-            'tar': ['-xzf', '-czf', '-tzf', '-xvzf', '-cvzf'],
-            'git': ['status', 'add', 'commit', 'push', 'pull', 'clone', 'branch', 'checkout', 'merge', 'log']
+            "ls": ["-l", "-a", "-h", "-la", "-lh", "-1", "-R", "-t", "-S", "-X"],
+            "cp": ["-r", "-i", "-v", "-p", "-u", "-n", "--backup"],
+            "mv": ["-i", "-v", "-u", "-n", "--backup"],
+            "rm": ["-i", "-r", "-f", "-v", "--interactive=never"],
+            "mkdir": ["-p", "-v", "-m"],
+            "chmod": ["-R", "-v", "+x", "+r", "+w", "755", "644"],
+            "chown": ["-R", "-v", "--reference"],
+            "grep": ["-i", "-v", "-r", "-n", "-l", "-c", "--color"],
+            "find": ["-name", "-type", "-exec", "-delete", "-mtime", "-size"],
+            "ps": ["aux", "ef", "-p", "-u", "-C"],
+            "tar": ["-xzf", "-czf", "-tzf", "-xvzf", "-cvzf"],
+            "git": [
+                "status",
+                "add",
+                "commit",
+                "push",
+                "pull",
+                "clone",
+                "branch",
+                "checkout",
+                "merge",
+                "log",
+            ],
         }
 
         # Event-Bindings für Autocomplete
@@ -79,16 +253,16 @@ class BashAutocomplete:
     def bind_events(self):
         """Bindet Events für Autocomplete"""
         # Strg+Space für Autocomplete
-        self.text_widget.bind('<Control-space>', self.show_suggestions)
+        self.text_widget.bind("<Control-space>", self.show_suggestions)
         # Tab für Autocomplete (alternative zu Tab für Einrückung)
-        self.text_widget.bind('<Control-Tab>', self.show_suggestions)
+        self.text_widget.bind("<Control-Tab>", self.show_suggestions)
         # Escape zum Schließen der Vorschlagsliste
-        self.text_widget.bind('<Escape>', self.hide_suggestions)
+        self.text_widget.bind("<Escape>", self.hide_suggestions)
 
     def get_current_word_bounds(self):
         """Ermittelt die Grenzen des aktuellen Wortes unter dem Cursor"""
         cursor_pos = self.text_widget.index(tk.INSERT)
-        line, col = cursor_pos.split('.')
+        line, col = cursor_pos.split(".")
 
         # Hole die aktuelle Zeile
         line_content = self.text_widget.get(f"{line}.0", f"{line}.end")
@@ -98,11 +272,17 @@ class BashAutocomplete:
         word_end = col
 
         # Gehe rückwärts zum Wortanfang
-        while word_start > 0 and (line_content[int(word_start)-1].isalnum() or line_content[int(word_start)-1] in '_-$/'):
+        while word_start > 0 and (
+            line_content[int(word_start) - 1].isalnum()
+            or line_content[int(word_start) - 1] in "_-$/"
+        ):
             word_start = str(int(word_start) - 1)
 
         # Gehe vorwärts zum Wortende
-        while int(word_end) < len(line_content) and (line_content[int(word_end)].isalnum() or line_content[int(word_end)] in '_-$/'):
+        while int(word_end) < len(line_content) and (
+            line_content[int(word_end)].isalnum()
+            or line_content[int(word_end)] in "_-$/"
+        ):
             word_end = str(int(word_end) + 1)
 
         return f"{line}.{word_start}", f"{line}.{word_end}"
@@ -117,21 +297,21 @@ class BashAutocomplete:
         suggestions = set()
 
         # Position in der Zeile
-        line_num, col = cursor_pos.split('.')
-        prefix = line_content[:int(col)].strip()
+        line_num, col = cursor_pos.split(".")
+        prefix = line_content[: int(col)].strip()
 
         # Prüfe Kontext
         if not partial_word:
             # Am Zeilenanfang - zeige alle Befehle
             suggestions.update(self.bash_commands)
             suggestions.update(self.bash_keywords)
-        elif partial_word.startswith('$'):
+        elif partial_word.startswith("$"):
             # Variablen
             suggestions.update(self.get_variable_suggestions())
-        elif partial_word.startswith('/'):
+        elif partial_word.startswith("/"):
             # Pfadvervollständigung
             suggestions.update(self.get_path_suggestions(partial_word))
-        elif partial_word.startswith('./') or partial_word.startswith('../'):
+        elif partial_word.startswith("./") or partial_word.startswith("../"):
             # Relativer Pfad
             suggestions.update(self.get_path_suggestions(partial_word))
         elif partial_word in self.command_options:
@@ -159,11 +339,26 @@ class BashAutocomplete:
         variables = set()
 
         # Häufige Bash-Variablen
-        variables.update(['$HOME', '$PATH', '$PWD', '$USER', '$SHELL', '$0', '$1', '$2', '$3', '$?', '$$', '$!'])
+        variables.update(
+            [
+                "$HOME",
+                "$PATH",
+                "$PWD",
+                "$USER",
+                "$SHELL",
+                "$0",
+                "$1",
+                "$2",
+                "$3",
+                "$?",
+                "$$",
+                "$!",
+            ]
+        )
 
         # Extrahiere benutzerdefinierte Variablen aus dem Text
         text_content = self.text_widget.get("1.0", tk.END)
-        var_pattern = r'\b([A-Za-z_][A-Za-z0-9_]*)\s*='
+        var_pattern = r"\b([A-Za-z_][A-Za-z0-9_]*)\s*="
         for match in re.finditer(var_pattern, text_content):
             var_name = match.group(1)
             variables.add(f"${var_name}")
@@ -192,9 +387,13 @@ class BashAutocomplete:
                     if item.startswith(prefix):
                         full_path = os.path.join(base_dir, item)
                         if os.path.isdir(full_path):
-                            suggestions.add(os.path.join(os.path.dirname(partial_path), item) + "/")
+                            suggestions.add(
+                                os.path.join(os.path.dirname(partial_path), item) + "/"
+                            )
                         else:
-                            suggestions.add(os.path.join(os.path.dirname(partial_path), item))
+                            suggestions.add(
+                                os.path.join(os.path.dirname(partial_path), item)
+                            )
 
         except (OSError, ValueError):
             pass
@@ -226,11 +425,13 @@ class BashAutocomplete:
         # Hole aktuelles Wort und Kontext
         current_word = self.get_current_word()
         cursor_pos = self.text_widget.index(tk.INSERT)
-        line_num, col = cursor_pos.split('.')
+        line_num, col = cursor_pos.split(".")
         line_content = self.text_widget.get(f"{line_num}.0", f"{line_num}.end")
 
         # Generiere Vorschläge
-        suggestions = self.get_context_aware_suggestions(current_word, line_content, cursor_pos)
+        suggestions = self.get_context_aware_suggestions(
+            current_word, line_content, cursor_pos
+        )
 
         if not suggestions:
             return "break"
@@ -260,7 +461,7 @@ class BashAutocomplete:
             self.suggestions_window,
             height=min(len(suggestions), 10),
             width=30,
-            font=("Courier", 10)
+            font=("Courier", 10),
         )
 
         # Füge Vorschläge hinzu
@@ -275,12 +476,12 @@ class BashAutocomplete:
             self.suggestions_listbox.activate(0)
 
         # Event-Bindings für Listbox
-        self.suggestions_listbox.bind('<Return>', self.apply_suggestion)
-        self.suggestions_listbox.bind('<Tab>', self.apply_suggestion)
-        self.suggestions_listbox.bind('<Escape>', self.hide_suggestions)
-        self.suggestions_listbox.bind('<Up>', lambda e: self.navigate_suggestions(-1))
-        self.suggestions_listbox.bind('<Down>', lambda e: self.navigate_suggestions(1))
-        self.suggestions_listbox.bind('<Button-1>', self.on_listbox_click)
+        self.suggestions_listbox.bind("<Return>", self.apply_suggestion)
+        self.suggestions_listbox.bind("<Tab>", self.apply_suggestion)
+        self.suggestions_listbox.bind("<Escape>", self.hide_suggestions)
+        self.suggestions_listbox.bind("<Up>", lambda e: self.navigate_suggestions(-1))
+        self.suggestions_listbox.bind("<Down>", lambda e: self.navigate_suggestions(1))
+        self.suggestions_listbox.bind("<Button-1>", self.on_listbox_click)
 
         # Fokussiere Listbox
         self.suggestions_listbox.focus_set()
@@ -324,7 +525,9 @@ class BashAutocomplete:
             self.text_widget.insert(self.current_word_start, selected_suggestion)
 
             # Setze Cursor an das Ende
-            self.text_widget.mark_set(tk.INSERT, f"{self.current_word_start} + {len(selected_suggestion)}c")
+            self.text_widget.mark_set(
+                tk.INSERT, f"{self.current_word_start} + {len(selected_suggestion)}c"
+            )
 
         self.hide_suggestions()
         return "break"
@@ -342,6 +545,7 @@ class BashAutocomplete:
 
         return "break"
 
+
 class BashSyntaxHighlighter:
     """Syntax-Highlighter für Bash-Scripts"""
 
@@ -351,39 +555,47 @@ class BashSyntaxHighlighter:
 
         # Syntax-Muster für Bash
         self.patterns = {
-            'comments': r'#.*$',  # Kommentare
-            'shebang': r'^#!/.*bash',  # Shebang
-            'strings': r'(["\'])(?:(?=(\\?))\2.)*?\1',  # Strings
-            'variables': r'\$[A-Za-z_][A-Za-z0-9_]*|\$\{[^}]+\}',  # Variablen
-            'commands': r'\b(?:echo|read|if|then|else|elif|fi|for|while|do|done|case|esac|function|return|exit|cd|ls|pwd|mkdir|rm|cp|mv|chmod|chown|grep|sed|awk|cat|head|tail|sort|uniq|wc|find|ps|kill|sudo|apt|yum|dnf|pacman)\b',  # Häufige Befehle
-            'operators': r'\b(?:-eq|-ne|-lt|-le|-gt|-ge|-f|-d|-e|-r|-w|-x|&&|\|\||==|!=|=~)\b',  # Operatoren
-            'numbers': r'\b\d+\b',  # Zahlen
-            'brackets': r'[(){}[\]]',  # Klammern
+            "comments": r"#.*$",  # Kommentare
+            "shebang": r"^#!/.*bash",  # Shebang
+            "strings": r'(["\'])(?:(?=(\\?))\2.)*?\1',  # Strings
+            "variables": r"\$[A-Za-z_][A-Za-z0-9_]*|\$\{[^}]+\}",  # Variablen
+            "commands": r"\b(?:echo|read|if|then|else|elif|fi|for|while|do|done|case|esac|function|return|exit|cd|ls|pwd|mkdir|rm|cp|mv|chmod|chown|grep|sed|awk|cat|head|tail|sort|uniq|wc|find|ps|kill|sudo|apt|yum|dnf|pacman)\b",  # Häufige Befehle
+            "operators": r"\b(?:-eq|-ne|-lt|-le|-gt|-ge|-f|-d|-e|-r|-w|-x|&&|\|\||==|!=|=~)\b",  # Operatoren
+            "numbers": r"\b\d+\b",  # Zahlen
+            "brackets": r"[(){}[\]]",  # Klammern
         }
 
         # Tag-Konfigurationen
         self.configure_tags()
 
         # Event-Binding für Live-Highlighting
-        self.text_widget.bind('<KeyRelease>', self.highlight_syntax)
-        self.text_widget.bind('<ButtonRelease>', self.highlight_syntax)
+        self.text_widget.bind("<KeyRelease>", self.highlight_syntax)
+        self.text_widget.bind("<ButtonRelease>", self.highlight_syntax)
 
     def configure_tags(self):
         """Konfiguriert die Text-Tags für Syntax-Highlighting"""
         # Kommentare - grün
-        self.text_widget.tag_configure("comments", foreground="#008000", font=("Courier", 10, "italic"))
+        self.text_widget.tag_configure(
+            "comments", foreground="#008000", font=("Courier", 10, "italic")
+        )
 
         # Shebang - blau
-        self.text_widget.tag_configure("shebang", foreground="#0000FF", font=("Courier", 10, "bold"))
+        self.text_widget.tag_configure(
+            "shebang", foreground="#0000FF", font=("Courier", 10, "bold")
+        )
 
         # Strings - orange
         self.text_widget.tag_configure("strings", foreground="#FF8C00")
 
         # Variablen - dunkelblau
-        self.text_widget.tag_configure("variables", foreground="#000080", font=("Courier", 10, "bold"))
+        self.text_widget.tag_configure(
+            "variables", foreground="#000080", font=("Courier", 10, "bold")
+        )
 
         # Befehle - rot
-        self.text_widget.tag_configure("commands", foreground="#FF0000", font=("Courier", 10, "bold"))
+        self.text_widget.tag_configure(
+            "commands", foreground="#FF0000", font=("Courier", 10, "bold")
+        )
 
         # Operatoren - magenta
         self.text_widget.tag_configure("operators", foreground="#FF00FF")
@@ -392,7 +604,9 @@ class BashSyntaxHighlighter:
         self.text_widget.tag_configure("numbers", foreground="#008080")
 
         # Klammern - schwarz (fett)
-        self.text_widget.tag_configure("brackets", foreground="#000000", font=("Courier", 10, "bold"))
+        self.text_widget.tag_configure(
+            "brackets", foreground="#000000", font=("Courier", 10, "bold")
+        )
 
     def highlight_syntax(self, event=None):
         """Hebt die Syntax im Text hervor"""
@@ -432,6 +646,7 @@ class BashSyntaxHighlighter:
             for tag in self.patterns.keys():
                 self.text_widget.tag_remove(tag, "1.0", tk.END)
 
+
 class BashScriptEditor(scrolledtext.ScrolledText):
     """Bash-Script-Editor mit Syntax-Highlighting und Tab-Unterstützung"""
 
@@ -440,8 +655,19 @@ class BashScriptEditor(scrolledtext.ScrolledText):
 
         # Tab-Konfiguration
         self.tab_size = 4  # 4 Leerzeichen pro Tab
-        self.indent_keywords = {'if', 'then', 'else', 'elif', 'for', 'while', 'until', 'case', 'function', 'do'}
-        self.dedent_keywords = {'fi', 'done', 'esac', 'else', 'elif'}
+        self.indent_keywords = {
+            "if",
+            "then",
+            "else",
+            "elif",
+            "for",
+            "while",
+            "until",
+            "case",
+            "function",
+            "do",
+        }
+        self.dedent_keywords = {"fi", "done", "esac", "else", "elif"}
 
         # Syntax-Highlighter initialisieren
         self.highlighter = BashSyntaxHighlighter(self)
@@ -456,10 +682,10 @@ class BashScriptEditor(scrolledtext.ScrolledText):
         self.config(tabs=(f"{self.tab_size}c",))  # Tab-Größe setzen
 
         # Tab-Event-Bindings
-        self.bind('<Tab>', self.handle_tab)
-        self.bind('<Shift-Tab>', self.handle_shift_tab)
-        self.bind('<Return>', self.handle_return)
-        self.bind('<BackSpace>', self.handle_backspace)
+        self.bind("<Tab>", self.handle_tab)
+        self.bind("<Shift-Tab>", self.handle_shift_tab)
+        self.bind("<Return>", self.handle_return)
+        self.bind("<BackSpace>", self.handle_backspace)
 
         # Rechtsklick-Menü
         self.create_context_menu()
@@ -467,29 +693,53 @@ class BashScriptEditor(scrolledtext.ScrolledText):
     def create_context_menu(self):
         """Erstellt ein Rechtsklick-Kontextmenü"""
         self.context_menu = tk.Menu(self, tearoff=0)
-        self.context_menu.add_command(label="Ausschneiden", command=lambda: self.event_generate("<<Cut>>"))
-        self.context_menu.add_command(label="Kopieren", command=lambda: self.event_generate("<<Copy>>"))
-        self.context_menu.add_command(label="Einfügen", command=lambda: self.event_generate("<<Paste>>"))
+        self.context_menu.add_command(
+            label="Ausschneiden", command=lambda: self.event_generate("<<Cut>>")
+        )
+        self.context_menu.add_command(
+            label="Kopieren", command=lambda: self.event_generate("<<Copy>>")
+        )
+        self.context_menu.add_command(
+            label="Einfügen", command=lambda: self.event_generate("<<Paste>>")
+        )
         self.context_menu.add_separator()
-        self.context_menu.add_command(label="Alles auswählen", command=self.select_all, accelerator="Ctrl+A")
+        self.context_menu.add_command(
+            label="Alles auswählen", command=self.select_all, accelerator="Ctrl+A"
+        )
         self.context_menu.add_separator()
-        self.context_menu.add_command(label="Einrücken", command=self.insert_indent, accelerator="Tab")
-        self.context_menu.add_command(label="Ausrücken", command=self.remove_indent, accelerator="Shift+Tab")
-        self.context_menu.add_command(label="Zeile duplizieren", command=self.duplicate_line, accelerator="Ctrl+D")
-        self.context_menu.add_command(label="Kommentar umschalten", command=self.comment_uncomment_selection, accelerator="Ctrl+/")
+        self.context_menu.add_command(
+            label="Einrücken", command=self.insert_indent, accelerator="Tab"
+        )
+        self.context_menu.add_command(
+            label="Ausrücken", command=self.remove_indent, accelerator="Shift+Tab"
+        )
+        self.context_menu.add_command(
+            label="Zeile duplizieren", command=self.duplicate_line, accelerator="Ctrl+D"
+        )
+        self.context_menu.add_command(
+            label="Kommentar umschalten",
+            command=self.comment_uncomment_selection,
+            accelerator="Ctrl+/",
+        )
         self.context_menu.add_separator()
-        self.context_menu.add_command(label="Autovervollständigung", command=self.autocomplete.show_suggestions, accelerator="Ctrl+Space")
+        self.context_menu.add_command(
+            label="Autovervollständigung",
+            command=self.autocomplete.show_suggestions,
+            accelerator="Ctrl+Space",
+        )
         self.context_menu.add_separator()
-        self.context_menu.add_command(label="Syntax-Highlighting umschalten",
-                                    command=self.highlighter.toggle_highlighting)
+        self.context_menu.add_command(
+            label="Syntax-Highlighting umschalten",
+            command=self.highlighter.toggle_highlighting,
+        )
 
         # Rechtsklick-Event binden
         self.bind("<Button-3>", self.show_context_menu)
 
         # Zusätzliche Tastenkombinationen
-        self.bind('<Control-a>', lambda e: self.select_all())
-        self.bind('<Control-d>', lambda e: self.duplicate_line())
-        self.bind('<Control-slash>', lambda e: self.comment_uncomment_selection())
+        self.bind("<Control-a>", lambda e: self.select_all())
+        self.bind("<Control-d>", lambda e: self.duplicate_line())
+        self.bind("<Control-slash>", lambda e: self.comment_uncomment_selection())
 
     def show_context_menu(self, event):
         """Zeigt das Kontextmenü an"""
@@ -527,7 +777,7 @@ class BashScriptEditor(scrolledtext.ScrolledText):
 
     def duplicate_line(self):
         """Dupliziert die aktuelle Zeile"""
-        current_line = self.index(tk.INSERT).split('.')[0]
+        current_line = self.index(tk.INSERT).split(".")[0]
         line_content = self.get(f"{current_line}.0", f"{current_line}.end")
 
         # Füge die Zeile nach der aktuellen ein
@@ -539,56 +789,56 @@ class BashScriptEditor(scrolledtext.ScrolledText):
         if not selected_text:
             return
 
-        lines = selected_text.split('\n')
+        lines = selected_text.split("\n")
         commented_lines = []
 
         for line in lines:
-            if line.strip().startswith('#'):
+            if line.strip().startswith("#"):
                 # Entferne Kommentar
-                commented_lines.append(line.replace('#', '', 1).lstrip())
+                commented_lines.append(line.replace("#", "", 1).lstrip())
             else:
                 # Füge Kommentar hinzu
-                commented_lines.append('# ' + line)
+                commented_lines.append("# " + line)
 
-        new_text = '\n'.join(commented_lines)
+        new_text = "\n".join(commented_lines)
         self.replace_selected_text(new_text)
 
     def handle_tab(self, event):
         """Behandelt Tab-Taste für Einrückung"""
         # Verhindere Standard-Tab-Verhalten
         self.after_idle(lambda: self.insert_indent())
-        return 'break'
+        return "break"
 
     def handle_shift_tab(self, event):
         """Behandelt Shift+Tab für Ausrückung"""
         self.after_idle(lambda: self.remove_indent())
-        return 'break'
+        return "break"
 
     def handle_return(self, event):
         """Behandelt Enter-Taste mit automatischer Einrückung"""
         # Hole die aktuelle Zeile
-        current_line = self.index(tk.INSERT).split('.')[0]
+        current_line = self.index(tk.INSERT).split(".")[0]
         line_content = self.get(f"{current_line}.0", f"{current_line}.end")
 
         # Berechne Einrückung für die nächste Zeile
         indent_level = self._calculate_indent_level(line_content)
 
         # Füge Zeilenumbruch und Einrückung ein
-        self.insert(tk.INSERT, '\n' + ' ' * (indent_level * self.tab_size))
+        self.insert(tk.INSERT, "\n" + " " * (indent_level * self.tab_size))
 
         # Stelle sicher, dass die neue Zeile sichtbar ist
         self.see(tk.INSERT)
-        return 'break'
+        return "break"
 
     def handle_backspace(self, event):
         """Behandelt Backspace mit intelligenter Ausrückung"""
         # Prüfe, ob wir am Anfang einer eingerückten Zeile sind
         current_pos = self.index(tk.INSERT)
-        line_start = current_pos.split('.')[0] + '.0'
+        line_start = current_pos.split(".")[0] + ".0"
         line_content = self.get(line_start, current_pos)
 
         # Wenn die Zeile nur aus Leerzeichen besteht und wir am Ende sind
-        if line_content.strip() == '' and len(line_content) > 0:
+        if line_content.strip() == "" and len(line_content) > 0:
             # Lösche bis zum nächsten Tab-Stop
             spaces_to_remove = len(line_content) % self.tab_size
             if spaces_to_remove == 0:
@@ -597,7 +847,7 @@ class BashScriptEditor(scrolledtext.ScrolledText):
             # Lösche die Leerzeichen
             start_pos = f"{line_start} + {len(line_content) - spaces_to_remove} chars"
             self.delete(start_pos, current_pos)
-            return 'break'
+            return "break"
 
         # Normales Backspace-Verhalten
         return None
@@ -630,16 +880,16 @@ class BashScriptEditor(scrolledtext.ScrolledText):
 
     def _indent_current_line(self):
         """Rückt die aktuelle Zeile ein"""
-        current_line = self.index(tk.INSERT).split('.')[0]
+        current_line = self.index(tk.INSERT).split(".")[0]
         line_start = f"{current_line}.0"
         line_content = self.get(line_start, f"{current_line}.end")
 
         # Füge Tab am Anfang der Zeile ein
-        self.insert(line_start, ' ' * self.tab_size)
+        self.insert(line_start, " " * self.tab_size)
 
     def _dedent_current_line(self):
         """Rückt die aktuelle Zeile aus"""
-        current_line = self.index(tk.INSERT).split('.')[0]
+        current_line = self.index(tk.INSERT).split(".")[0]
         line_start = f"{current_line}.0"
         line_content = self.get(line_start, f"{current_line}.end")
 
@@ -653,12 +903,12 @@ class BashScriptEditor(scrolledtext.ScrolledText):
 
     def _indent_selection(self):
         """Rückt alle ausgewählten Zeilen ein"""
-        start_line = self.index(tk.SEL_FIRST).split('.')[0]
-        end_line = self.index(tk.SEL_LAST).split('.')[0]
+        start_line = self.index(tk.SEL_FIRST).split(".")[0]
+        end_line = self.index(tk.SEL_LAST).split(".")[0]
 
         for line_num in range(int(start_line), int(end_line) + 1):
             line_start = f"{line_num}.0"
-            self.insert(line_start, ' ' * self.tab_size)
+            self.insert(line_start, " " * self.tab_size)
 
         # Aktualisiere Auswahl
         new_start = f"{start_line}.0 + {self.tab_size} chars"
@@ -668,8 +918,8 @@ class BashScriptEditor(scrolledtext.ScrolledText):
 
     def _dedent_selection(self):
         """Rückt alle ausgewählten Zeilen aus"""
-        start_line = self.index(tk.SEL_FIRST).split('.')[0]
-        end_line = self.index(tk.SEL_LAST).split('.')[0]
+        start_line = self.index(tk.SEL_FIRST).split(".")[0]
+        end_line = self.index(tk.SEL_LAST).split(".")[0]
 
         total_removed = 0
         for line_num in range(int(start_line), int(end_line) + 1):
@@ -700,7 +950,9 @@ class BashScriptEditor(scrolledtext.ScrolledText):
 
         # Prüfe auf Einrückung-verringernde Schlüsselwörter
         if any(keyword in stripped_line for keyword in self.dedent_keywords):
-            current_indent = (len(line_content) - len(line_content.lstrip())) // self.tab_size
+            current_indent = (
+                len(line_content) - len(line_content.lstrip())
+            ) // self.tab_size
             return max(0, current_indent - 1)
 
         # Behalte aktuelle Einrückungsebene bei
@@ -708,9 +960,10 @@ class BashScriptEditor(scrolledtext.ScrolledText):
 
     def get_current_indent_level(self):
         """Gibt die aktuelle Einrückungsebene zurück"""
-        current_line = self.index(tk.INSERT).split('.')[0]
+        current_line = self.index(tk.INSERT).split(".")[0]
         line_content = self.get(f"{current_line}.0", f"{current_line}.end")
         return (len(line_content) - len(line_content.lstrip())) // self.tab_size
+
 
 # Alias für Abwärtskompatibilität
 EnhancedScriptEditor = BashScriptEditor

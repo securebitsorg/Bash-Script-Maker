@@ -188,6 +188,28 @@ Forks haben standardmäßig nicht alle Berechtigungen. Daher:
 - CI/CD Tests laufen in allen Branches
 - Releases nur vom Haupt-Repository
 
+### Alternative Security-Scan Lösung:
+
+**Warum CodeQL deaktiviert wurde:**
+- Komplexe Berechtigungskonfiguration erforderlich
+- SARIF-Upload funktioniert nicht in Forks
+- Hoher Konfigurationsaufwand
+
+**Ersatz: Security-Scan Workflow (`.github/workflows/security-scan.yml`):**
+- ✅ Einfachere Konfiguration
+- ✅ Funktioniert in Forks und Haupt-Repository
+- ✅ Verwendet Bandit und Safety für Security-Scans
+- ✅ Lädt Ergebnisse als Artefakte hoch
+- ✅ Keine speziellen Berechtigungen erforderlich
+
+**Verwendung:**
+```yaml
+# Automatisch aktiviert für:
+- Push zu main/develop
+- Pull Requests
+- Keine speziellen Secrets erforderlich
+```
+
 ### MyPy Type-Checking:
 
 **Warum wurde MyPy gelockert?**
@@ -305,6 +327,8 @@ Nach dem ersten Release aktualisieren Sie die Badge-URLs im README.md:
 - **"Resource not accessible by integration"**: Fehlende Berechtigungen - Workflow wurde korrigiert
 - **"Could not find a version that satisfies the requirement tkinter"**: tkinter ist ein System-Paket - wurde korrigiert
 - **MyPy Type-Annotation-Fehler**: MyPy-Konfiguration gelockert für einfachere Entwicklung
+- **Black Formatierungsfehler**: Code wurde mit Black formatiert und entspricht jetzt dem Styleguide
+- **CodeQL SARIF Upload-Fehler**: CodeQL temporär deaktiviert, Security-Scan als Alternative
 
 ### GitHub Actions Limits
 - **Free Tier**: 2.000 Minuten/Monat für öffentliche Repositories
