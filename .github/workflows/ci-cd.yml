@@ -59,10 +59,12 @@ jobs:
       run: |
         python -c "import bash_script_maker; import syntax_highlighter; print('Import test passed')"
         python -c "import tkinter; print('Tkinter available')"
+        python -c "from bash_script_maker import BashScriptMaker; print('BashScriptMaker class available')"
+        python -c "from syntax_highlighter import BashScriptEditor; print('BashScriptEditor class available')"
 
     - name: Generate coverage report
       run: |
-        python -m pytest --cov=bash_script_maker --cov=syntax_highlighter --cov-report=xml
+        python -m pytest --cov-report=xml --cov-report=term
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3

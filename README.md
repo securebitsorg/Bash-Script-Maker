@@ -115,9 +115,10 @@ pip install -r requirements.txt
 Nach der Installation können Sie testen, ob alles korrekt funktioniert:
 ```bash
 ./test_installation.sh
+./tools/test_dependencies.py
 ```
 
-Dieses Script überprüft alle Abhängigkeiten und gibt detaillierte Informationen über eventuelle Probleme.
+Diese Scripts überprüfen alle Abhängigkeiten und geben detaillierte Informationen über eventuelle Probleme.
 
 ### Verfügbare Scripts
 
@@ -127,6 +128,8 @@ Das Projekt enthält folgende Installations- und Hilfsscripts:
 - `install_apt.sh` - Spezifisch für Ubuntu/Debian
 - `install_dnf.sh` - Spezifisch für Fedora/RHEL/CentOS
 - `test_installation.sh` - Überprüft die Installation
+- `tools/test_dependencies.py` - Detaillierte Dependency-Tests
+- `tests/test_basic.py` - Pytest-Tests für grundlegende Funktionalität
 - `start.sh` - Startet das Programm mit Abhängigkeitsprüfung
 
 Alle Scripts sind ausführbar und können direkt aufgerufen werden.
@@ -253,6 +256,18 @@ tox -e py39,lint,type
 #### Package bauen:
 ```bash
 python -m build
+```
+
+#### Tests ausführen:
+```bash
+# Alle Tests mit Coverage
+pytest
+
+# Spezifische Tests
+pytest tests/test_basic.py
+
+# Mit Coverage-Bericht
+pytest --cov=bash_script_maker --cov=syntax_highlighter --cov-report=html
 ```
 
 ## Mitwirken

@@ -107,7 +107,7 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "-ra -q --strict-markers --disable-warnings"
+addopts = "-ra -q --strict-markers --disable-warnings --cov=bash_script_maker --cov=syntax_highlighter --cov-report=xml --cov-report=term"
 testpaths = [
     "tests",
 ]

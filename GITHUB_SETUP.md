@@ -328,6 +328,7 @@ Nach dem ersten Release aktualisieren Sie die Badge-URLs im README.md:
 - **"Could not find a version that satisfies the requirement tkinter"**: tkinter ist ein System-Paket - wurde korrigiert
 - **MyPy Type-Annotation-Fehler**: MyPy-Konfiguration gelockert für einfachere Entwicklung
 - **Black Formatierungsfehler**: Code wurde mit Black formatiert und entspricht jetzt dem Styleguide
+- **pytest Coverage-Fehler**: Korrekte pytest-Tests erstellt, Coverage von 15% auf 23% erhöht
 - **CodeQL SARIF Upload-Fehler**: CodeQL temporär deaktiviert, Security-Scan als Alternative
 
 ### GitHub Actions Limits
