@@ -1,5 +1,6 @@
 name: Manual Release
 
+
 on:
   workflow_dispatch:
     inputs:
@@ -83,10 +84,55 @@ jobs:
 
     - name: Create git tag
       run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git add VERSION
-        git commit -m "chore: bump version to ${{ steps.new_version.outputs.new_version }}"
+        git config --global user.name "github-actionsRun python -m build
+* Creating isolated environment: venv+pip...
+* Installing packages in isolated environment:
+  - setuptools>=61.0
+  - wheel
+* Getting build dependencies for sdist...
+/tmp/build-env-mnny305u/lib/python3.9/site-packages/setuptools/config/_apply_pyprojecttoml.py:82: SetuptoolsDeprecationWarning: `project.license` as a TOML table is deprecated
+!!
+        ********************************************************************************
+        Please use a simple string containing a SPDX expression for `project.license`. You can also use `project.license-files`. (Both options available on setuptools>=77.0.0).
+        By 2026-Feb-18, you need to update your project and remove deprecated calls
+        or your builds will no longer be supported.
+        See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+        ********************************************************************************
+!!
+  corresp(dist, value, root_dir)
+/tmp/build-env-mnny305u/lib/python3.9/site-packages/setuptools/config/_apply_pyprojecttoml.py:82: SetuptoolsWarning: `install_requires` overwritten in `pyproject.toml` (dependencies)
+  corresp(dist, value, root_dir)
+/tmp/build-env-mnny305u/lib/python3.9/site-packages/setuptools/config/_apply_pyprojecttoml.py:82: SetuptoolsWarning: `extras_require` overwritten in `pyproject.toml` (optional-dependencies)
+  corresp(dist, value, root_dir)
+/tmp/build-env-mnny305u/lib/python3.9/site-packages/setuptools/config/_apply_pyprojecttoml.py:61: SetuptoolsDeprecationWarning: License classifiers are deprecated.
+!!
+        ********************************************************************************
+        Please consider removing the following classifiers in favor of a SPDX license expression:
+        License :: OSI Approved :: MIT License
+        See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+        ********************************************************************************
+!!
+  dist._finalize_license_expression()
+/tmp/build-env-mnny305u/lib/python3.9/site-packages/setuptools/dist.py:759: SetuptoolsDeprecationWarning: License classifiers are deprecated.
+!!
+        ********************************************************************************
+        Please consider removing the following classifiers in favor of a SPDX license expression:
+        License :: OSI Approved :: MIT License
+        See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+        ********************************************************************************
+!!
+  self._finalize_license_expression()
+running egg_info
+creating bash_script_maker.egg-info
+writing bash_script_maker.egg-info/PKG-INFO
+writing dependency_links to bash_script_maker.egg-info/dependency_links.txt
+writing entry points to bash_script_maker.egg-info/entry_points.txt
+writing requirements to bash_script_maker.egg-info/requires.txt
+writing top-level names to bash_script_maker.egg-info/top_level.txt
+writing manifest file 'bash_script_maker.egg-info/SOURCES.txt'
+error: package directory 'bash_script_maker' does not exist
+ERROR Backend subprocess exited when trying to invoke get_requires_for_build_sdist
+Error: Process completed with exit code 1.ps.new_version.outputs.new_version }}"
         git tag "v${{ steps.new_version.outputs.new_version }}"
 
     - name: Push changes and tags
@@ -122,3 +168,4 @@ jobs:
           - Tarball: [TAR.GZ](https://github.com/${{ github.repository }}/archive/v${{ steps.new_version.outputs.new_version }}.tar.gz)
         draft: false
         prerelease: false
+# Finish
