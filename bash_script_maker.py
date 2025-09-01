@@ -37,9 +37,7 @@ class FontSettingsDialog(ttk.Toplevel):
         container.pack(fill=tk.BOTH, expand=True)
 
         # Schriftfamilie
-        font_frame = ttk.Labelframe(
-            container, text=_("Schriftart"), padding=10
-        )
+        font_frame = ttk.Labelframe(container, text=_("Schriftart"), padding=10)
         font_frame.pack(fill=tk.X, pady=5)
 
         # Empfohlene Schriftarten für Code
@@ -52,7 +50,7 @@ class FontSettingsDialog(ttk.Toplevel):
             "Menlo",
             "Monaco",
         ]
-        
+
         try:
             # Versuche, System-Schriftarten zu laden
             system_fonts = sorted(
@@ -62,7 +60,7 @@ class FontSettingsDialog(ttk.Toplevel):
         except Exception:
             # Fallback, falls das Laden fehlschlägt
             all_fonts = sorted(preferred_fonts)
-            
+
         if not all_fonts:
             # Fallback, falls gar keine Schriftarten gefunden werden
             all_fonts = ["Courier New", "Consolas", "Monaco"]
@@ -74,7 +72,6 @@ class FontSettingsDialog(ttk.Toplevel):
                 bootstyle="warning",
             ).pack(pady=5)
 
-
         self.font_var = tk.StringVar(value=current_font_family)
         self.font_combo = ttk.Combobox(
             font_frame, textvariable=self.font_var, values=all_fonts
@@ -82,9 +79,7 @@ class FontSettingsDialog(ttk.Toplevel):
         self.font_combo.pack(fill=tk.X)
 
         # Schriftgröße
-        size_frame = ttk.Labelframe(
-            container, text=_("Schriftgröße"), padding=10
-        )
+        size_frame = ttk.Labelframe(container, text=_("Schriftgröße"), padding=10)
         size_frame.pack(fill=tk.X, pady=5)
 
         self.size_var = tk.IntVar(value=current_font_size)
@@ -106,7 +101,10 @@ class FontSettingsDialog(ttk.Toplevel):
         apply_btn.pack(side=tk.RIGHT, padx=(5, 0))
 
         close_btn = ttk.Button(
-            button_frame, text=_("Schließen"), command=self.destroy, bootstyle="secondary"
+            button_frame,
+            text=_("Schließen"),
+            command=self.destroy,
+            bootstyle="secondary",
         )
         close_btn.pack(side=tk.RIGHT)
 
@@ -138,9 +136,7 @@ class AboutDialog(ttk.Toplevel):
         desc_label = ttk.Label(container, text=desc_text, wraplength=400)
         desc_label.pack(pady=(0, 20))
 
-        features_frame = ttk.Labelframe(
-            container, text=_("Funktionen"), padding=15
-        )
+        features_frame = ttk.Labelframe(container, text=_("Funktionen"), padding=15)
         features_frame.pack(fill=tk.BOTH, expand=True, pady=5)
 
         features = [
@@ -358,38 +354,53 @@ class BashScriptMaker:
         toolbar.pack(side=tk.TOP, fill=tk.X, padx=5, pady=(5, 0))
 
         # Toolbar-Inhalte - LINKS
-        btn_new = ttk.Button(toolbar, text=_("Neu"), command=self.new_script, bootstyle="primary")
+        btn_new = ttk.Button(
+            toolbar, text=_("Neu"), command=self.new_script, bootstyle="primary"
+        )
         btn_new.pack(side=tk.LEFT, padx=(0, 5), pady=20)
         ToolTip(btn_new, text=_("Erstellt ein neues, leeres Script (Ctrl+N)"))
-        btn_open = ttk.Button(toolbar, text=_("Öffnen"), command=self.open_script, bootstyle="secondary")
+        btn_open = ttk.Button(
+            toolbar, text=_("Öffnen"), command=self.open_script, bootstyle="secondary"
+        )
         btn_open.pack(side=tk.LEFT, padx=(5, 0), pady=20)
         ToolTip(btn_open, text=_("Öffnet ein vorhandenes Script (Ctrl+O)"))
-        btn_save = ttk.Button(toolbar, text=_("Speichern"), command=self.save_script, bootstyle="info")
+        btn_save = ttk.Button(
+            toolbar, text=_("Speichern"), command=self.save_script, bootstyle="info"
+        )
         btn_save.pack(side=tk.LEFT, padx=(5, 0), pady=20)
         ToolTip(btn_save, text=_("Speichert das aktuelle Script (Ctrl+S)"))
-        btn_exec = ttk.Button(toolbar, text=_("Ausführen"), command=self.execute_script, bootstyle="success")
-        btn_exec.pack(side=tk.LEFT, padx=(5, 15), pady=20) # Extra Abstand nach dem letzten Button
+        btn_exec = ttk.Button(
+            toolbar,
+            text=_("Ausführen"),
+            command=self.execute_script,
+            bootstyle="success",
+        )
+        btn_exec.pack(
+            side=tk.LEFT, padx=(5, 15), pady=20
+        )  # Extra Abstand nach dem letzten Button
         ToolTip(btn_exec, text=_("Führt das aktuelle Script aus (F5)"))
-        
+
         # Separator für visuelle Trennung
         separator = ttk.Separator(toolbar, orient=tk.VERTICAL)
-        separator.pack(side=tk.LEFT, fill='y', padx=5, pady=20)
+        separator.pack(side=tk.LEFT, fill="y", padx=5, pady=20)
 
         # Toolbar-Inhalte - RECHTS
         script_name_label = ttk.Label(toolbar, text=_("Script-Name:"))
         script_name_label.pack(side=tk.LEFT, padx=(5, 5), pady=20)
-        
+
         self.name_entry = ttk.Entry(toolbar, width=40)
-        self.name_entry.pack(side=tk.LEFT, padx=(0, 10), fill=tk.X, expand=True, pady=20)
+        self.name_entry.pack(
+            side=tk.LEFT, padx=(0, 10), fill=tk.X, expand=True, pady=20
+        )
         self.name_entry.insert(0, self.script_name)
         self.name_entry.bind("<KeyRelease>", self.update_script_name)
 
         # Hauptcontainer für linke und rechte Spalte (füllt den Rest des Platzes)
         main_container = ttk.Frame(self.root)
         main_container.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
-        
+
         main_container.grid_rowconfigure(0, weight=1)
-        main_container.grid_columnconfigure(1, weight=1) # Rechte Spalte soll wachsen
+        main_container.grid_columnconfigure(1, weight=1)  # Rechte Spalte soll wachsen
 
         return main_container
 
@@ -397,7 +408,7 @@ class BashScriptMaker:
         """Erstellt die Befehlspalette mit verfügbaren Komponenten"""
         left_frame = ttk.LabelFrame(parent, text=_("Befehle & Komponenten"), padding=5)
         left_frame.grid(row=0, column=0, sticky="nswe")
-        
+
         self.notebook = ttk.Notebook(left_frame, bootstyle="primary")
         self.notebook.pack(fill=tk.BOTH, expand=True)
 
@@ -507,9 +518,11 @@ class BashScriptMaker:
         editor_container.grid_rowconfigure(0, weight=1)
         editor_container.grid_columnconfigure(0, weight=1)
 
-        right_frame = ttk.LabelFrame(editor_container, text=_("Script-Editor"), padding=5)
+        right_frame = ttk.LabelFrame(
+            editor_container, text=_("Script-Editor"), padding=5
+        )
         right_frame.grid(row=0, column=0, sticky="nswe")
-        
+
         self.text_editor = EnhancedScriptEditor(
             right_frame, wrap=tk.WORD, autohide=True, vbar=True, hbar=True
         )
@@ -517,7 +530,7 @@ class BashScriptMaker:
 
         # Support-Bereich unter dem Editor
         self.create_support_area(editor_container)
-        
+
     def create_support_area(self, parent):
         """Erstellt den Bereich für die Support-Buttons."""
         support_frame = ttk.LabelFrame(
@@ -533,9 +546,7 @@ class BashScriptMaker:
             support_frame,
             text="GitHub Sponsors",
             bootstyle="success-outline",
-            command=lambda: self.open_link(
-                "https://github.com/sponsors/securebitsorg"
-            ),
+            command=lambda: self.open_link("https://github.com/sponsors/securebitsorg"),
         )
         github_btn.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
         ToolTip(github_btn, text=_("Unterstütze das Projekt auf GitHub Sponsors"))
@@ -628,7 +639,9 @@ class BashScriptMaker:
                 file.write(content)
             self.status_var.set(_("Script gespeichert: {}").format(file_path))
         except Exception as e:
-            messagebox.showerror(_("Fehler"), _("Fehler beim Speichern: {}").format(str(e)))
+            messagebox.showerror(
+                _("Fehler"), _("Fehler beim Speichern: {}").format(str(e))
+            )
 
     def save_script_as(self):
         """Speichert das Script unter einem neuen Namen"""

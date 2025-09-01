@@ -579,12 +579,12 @@ class BashSyntaxHighlighter:
         """Konfiguriert die Text-Tags für das Solarized Dark Theme"""
         # Solarized Dark Palette
         sol_base01 = "#586e75"  # Comments
-        sol_cyan = "#2aa198"    # Shebang
+        sol_cyan = "#2aa198"  # Shebang
         sol_orange = "#cb4b16"  # Strings, Numbers
-        sol_blue = "#268bd2"    # Variables
-        sol_green = "#859900"   # Commands, Keywords
-        sol_magenta = "#d33682" # Operators
-        sol_base0 = "#839496"   # Brackets
+        sol_blue = "#268bd2"  # Variables
+        sol_green = "#859900"  # Commands, Keywords
+        sol_magenta = "#d33682"  # Operators
+        sol_base0 = "#839496"  # Brackets
 
         # Kommentare
         self.tag_configs["comments"] = {
@@ -777,7 +777,11 @@ class BashScriptEditor(ScrolledText):
         # Sorge dafür, dass die Syntax-Tags die neue Schriftgröße übernehmen, aber ihre Stile beibehalten
         for tag_name, config in self.highlighter.tag_configs.items():
             font_config = config.get("font")
-            if font_config and isinstance(font_config, (list, tuple)) and len(font_config) == 3:
+            if (
+                font_config
+                and isinstance(font_config, (list, tuple))
+                and len(font_config) == 3
+            ):
                 # Behält den Stil (italic, bold) bei
                 style = font_config[2]
                 self.text.tag_configure(tag_name, font=(font_family, font_size, style))
