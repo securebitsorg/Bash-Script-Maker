@@ -589,7 +589,7 @@ class BashSyntaxHighlighter:
         # Kommentare
         self.tag_configs["comments"] = {
             "foreground": sol_base01,
-            "font": ("Courier", 10, "italic"),
+            "font": ("Courier", 10, "italic bold"),
         }
         self.text_widget.tag_configure("comments", **self.tag_configs["comments"])
 
@@ -601,7 +601,10 @@ class BashSyntaxHighlighter:
         self.text_widget.tag_configure("shebang", **self.tag_configs["shebang"])
 
         # Strings
-        self.tag_configs["strings"] = {"foreground": sol_orange}
+        self.tag_configs["strings"] = {
+            "foreground": sol_orange,
+            "font": ("Courier", 10, "bold"),
+        }
         self.text_widget.tag_configure("strings", **self.tag_configs["strings"])
 
         # Variablen
@@ -619,11 +622,17 @@ class BashSyntaxHighlighter:
         self.text_widget.tag_configure("commands", **self.tag_configs["commands"])
 
         # Operatoren
-        self.tag_configs["operators"] = {"foreground": sol_magenta}
+        self.tag_configs["operators"] = {
+            "foreground": sol_magenta,
+            "font": ("Courier", 10, "bold"),
+        }
         self.text_widget.tag_configure("operators", **self.tag_configs["operators"])
 
         # Zahlen
-        self.tag_configs["numbers"] = {"foreground": sol_orange}
+        self.tag_configs["numbers"] = {
+            "foreground": sol_orange,
+            "font": ("Courier", 10, "bold"),
+        }
         self.text_widget.tag_configure("numbers", **self.tag_configs["numbers"])
 
         # Klammern
@@ -680,7 +689,7 @@ class BashScriptEditor(ScrolledText):
         self.tab_size = 4  # 4 Leerzeichen pro Tab
 
         # Konfigurationen an das zugrundeliegende Text-Widget via kwargs weitergeben
-        kwargs.setdefault("font", ("Courier", 10))
+        kwargs.setdefault("font", ("Courier", 10, "bold"))
         self.base_font = kwargs.get("font")
         kwargs.setdefault("tabs", (f"{self.tab_size}c",))
 
@@ -772,7 +781,7 @@ class BashScriptEditor(ScrolledText):
 
     def update_font(self, font_family, font_size):
         """Aktualisiert die Schriftart des Editors."""
-        new_font = (font_family, font_size)
+        new_font = (font_family, font_size, "bold")
         self.text.config(font=new_font)
         # Sorge dafür, dass die Syntax-Tags die neue Schriftgröße übernehmen, aber ihre Stile beibehalten
         for tag_name, config in self.highlighter.tag_configs.items():

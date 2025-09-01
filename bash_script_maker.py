@@ -30,7 +30,9 @@ class FontSettingsDialog(ttk.Toplevel):
         self.editor = editor
 
         # Aktuelle Schriftart ermitteln
-        current_font_family, current_font_size = editor.base_font
+        font_tuple = editor.base_font
+        current_font_family = font_tuple[0]
+        current_font_size = font_tuple[1]
 
         # UI Elemente
         container = ttk.Frame(self, padding=15)
