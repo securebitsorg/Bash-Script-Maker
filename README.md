@@ -289,6 +289,50 @@ Beiträge sind willkommen! Siehe [CONTRIBUTING.md](CONTRIBUTING.md) für detaill
 7. `./init_github.sh` (für automatischen Push)
 8. Pull Request erstellen
 
+### Übersetzungen beisteuern
+
+Wir freuen uns über Hilfe bei der Übersetzung des Bash-Script-Makers in neue Sprachen!
+
+**So fügen Sie eine neue Sprache hinzu:**
+
+1.  **Sprach-Code finden:** Finden Sie den zweibuchstabigen ISO 639-1 Code für Ihre Sprache (z.B. `fr` für Französisch).
+
+2.  **Verzeichnis erstellen:** Erstellen Sie ein neues Verzeichnis unter `locales/`. Für Französisch wäre das `locales/fr/LC_MESSAGES/`.
+
+3.  **Übersetzungsdatei erstellen:**
+    *   Kopieren Sie die deutsche Vorlagendatei: `cp locales/de/LC_MESSAGES/base.po locales/fr/LC_MESSAGES/base.po`
+    *   Öffnen Sie die neue `.po`-Datei mit einem Texteditor oder einem speziellen Tool wie [Poedit](https://poedit.net/).
+
+4.  **Texte übersetzen:**
+    *   Gehen Sie die Datei durch und übersetzen Sie alle Texte, die in `msgid "..."` stehen.
+    *   Tragen Sie Ihre Übersetzung in das `msgstr "..."`-Feld direkt darunter ein.
+    *   **Wichtig:** Lassen Sie Platzhalter wie `{}` unverändert.
+
+    **Beispiel:**
+    ```po
+    msgid "Datei"
+    msgstr "File"
+
+    msgid "Script gespeichert: {}"
+    msgstr "Script saved: {}"
+    ```
+
+5.  **Übersetzung kompilieren:**
+    *   Damit das Programm Ihre Übersetzung nutzen kann, muss sie kompiliert werden. Führen Sie dazu einfach das mitgelieferte Skript aus:
+    ```bash
+    python compile_translations.py
+    ```
+    *   Dieses Skript benötigt eventuell die `polib`-Bibliothek. Falls nicht vorhanden, installieren Sie sie mit: `pip install polib`.
+
+6.  **Sprache im Menü hinzufügen:**
+    *   Öffnen Sie die Datei `bash_script_maker.py`.
+    *   Suchen Sie nach `language_menu`.
+    *   Fügen Sie einen neuen Eintrag für Ihre Sprache hinzu, ähnlich wie die bereits vorhandenen für Deutsch und Englisch.
+
+7.  **Pull Request erstellen:** Erstellen Sie einen Pull Request mit Ihren Änderungen, damit wir die neue Sprache in das Projekt aufnehmen können.
+
+Vielen Dank für Ihre Hilfe!
+
 ### Repository zu GitHub pushen:
 ```bash
 # Automatisch (empfohlen)

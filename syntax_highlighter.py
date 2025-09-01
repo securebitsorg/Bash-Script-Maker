@@ -6,6 +6,8 @@ Syntax-Highlighter für Bash-Scripts
 
 import tkinter as tk
 from tkinter import scrolledtext, Listbox, Toplevel
+import ttkbootstrap as ttk
+from ttkbootstrap.scrolled import ScrolledText
 import re
 import os
 import glob
@@ -552,6 +554,7 @@ class BashSyntaxHighlighter:
     def __init__(self, text_widget):
         self.text_widget = text_widget
         self.highlighting_active = True
+        self.tag_configs = {}  # Hält die Konfigurationen für die Tags
 
         # Syntax-Muster für Bash
         self.patterns = {
@@ -573,40 +576,62 @@ class BashSyntaxHighlighter:
         self.text_widget.bind("<ButtonRelease>", self.highlight_syntax)
 
     def configure_tags(self):
-        """Konfiguriert die Text-Tags für Syntax-Highlighting"""
-        # Kommentare - grün
-        self.text_widget.tag_configure(
-            "comments", foreground="#008000", font=("Courier", 10, "italic")
-        )
+        """Konfiguriert die Text-Tags für das Solarized Dark Theme"""
+        # Solarized Dark Palette
+        sol_base01 = "#586e75"  # Comments
+        sol_cyan = "#2aa198"    # Shebang
+        sol_orange = "#cb4b16"  # Strings, Numbers
+        sol_blue = "#268bd2"    # Variables
+        sol_green = "#859900"   # Commands, Keywords
+        sol_magenta = "#d33682" # Operators
+        sol_base0 = "#839496"   # Brackets
 
-        # Shebang - blau
-        self.text_widget.tag_configure(
-            "shebang", foreground="#0000FF", font=("Courier", 10, "bold")
-        )
+        # Kommentare
+        self.tag_configs["comments"] = {
+            "foreground": sol_base01,
+            "font": ("Courier", 10, "italic"),
+        }
+        self.text_widget.tag_configure("comments", **self.tag_configs["comments"])
 
-        # Strings - orange
-        self.text_widget.tag_configure("strings", foreground="#FF8C00")
+        # Shebang
+        self.tag_configs["shebang"] = {
+            "foreground": sol_cyan,
+            "font": ("Courier", 10, "bold"),
+        }
+        self.text_widget.tag_configure("shebang", **self.tag_configs["shebang"])
 
-        # Variablen - dunkelblau
-        self.text_widget.tag_configure(
-            "variables", foreground="#000080", font=("Courier", 10, "bold")
-        )
+        # Strings
+        self.tag_configs["strings"] = {"foreground": sol_orange}
+        self.text_widget.tag_configure("strings", **self.tag_configs["strings"])
 
-        # Befehle - rot
-        self.text_widget.tag_configure(
-            "commands", foreground="#FF0000", font=("Courier", 10, "bold")
-        )
+        # Variablen
+        self.tag_configs["variables"] = {
+            "foreground": sol_blue,
+            "font": ("Courier", 10, "bold"),
+        }
+        self.text_widget.tag_configure("variables", **self.tag_configs["variables"])
 
-        # Operatoren - magenta
-        self.text_widget.tag_configure("operators", foreground="#FF00FF")
+        # Befehle & Schlüsselwörter
+        self.tag_configs["commands"] = {
+            "foreground": sol_green,
+            "font": ("Courier", 10, "bold"),
+        }
+        self.text_widget.tag_configure("commands", **self.tag_configs["commands"])
 
-        # Zahlen - dunkelgrün
-        self.text_widget.tag_configure("numbers", foreground="#008080")
+        # Operatoren
+        self.tag_configs["operators"] = {"foreground": sol_magenta}
+        self.text_widget.tag_configure("operators", **self.tag_configs["operators"])
 
-        # Klammern - schwarz (fett)
-        self.text_widget.tag_configure(
-            "brackets", foreground="#000000", font=("Courier", 10, "bold")
-        )
+        # Zahlen
+        self.tag_configs["numbers"] = {"foreground": sol_orange}
+        self.text_widget.tag_configure("numbers", **self.tag_configs["numbers"])
+
+        # Klammern
+        self.tag_configs["brackets"] = {
+            "foreground": sol_base0,
+            "font": ("Courier", 10, "bold"),
+        }
+        self.text_widget.tag_configure("brackets", **self.tag_configs["brackets"])
 
     def highlight_syntax(self, event=None):
         """Hebt die Syntax im Text hervor"""
@@ -647,14 +672,21 @@ class BashSyntaxHighlighter:
                 self.text_widget.tag_remove(tag, "1.0", tk.END)
 
 
-class BashScriptEditor(scrolledtext.ScrolledText):
+class BashScriptEditor(ScrolledText):
     """Bash-Script-Editor mit Syntax-Highlighting und Tab-Unterstützung"""
 
     def __init__(self, parent, **kwargs):
+        # Tab-Konfiguration muss vor dem super().__init__ Aufruf stehen
+        self.tab_size = 4  # 4 Leerzeichen pro Tab
+
+        # Konfigurationen an das zugrundeliegende Text-Widget via kwargs weitergeben
+        kwargs.setdefault("font", ("Courier", 10))
+        self.base_font = kwargs.get("font")
+        kwargs.setdefault("tabs", (f"{self.tab_size}c",))
+
         super().__init__(parent, **kwargs)
 
-        # Tab-Konfiguration
-        self.tab_size = 4  # 4 Leerzeichen pro Tab
+        # Einrückungs-Schlüsselwörter
         self.indent_keywords = {
             "if",
             "then",
@@ -670,29 +702,26 @@ class BashScriptEditor(scrolledtext.ScrolledText):
         self.dedent_keywords = {"fi", "done", "esac", "else", "elif"}
 
         # Syntax-Highlighter initialisieren
-        self.highlighter = BashSyntaxHighlighter(self)
+        self.highlighter = BashSyntaxHighlighter(self.text)
 
         # Autocomplete initialisieren
-        self.autocomplete = BashAutocomplete(self)
+        self.autocomplete = BashAutocomplete(self.text)
 
-        # Zusätzliche Konfiguration
-        self.config(font=("Courier", 10))
-        self.config(bg="#F8F8F8")  # Heller Hintergrund
-        self.config(insertbackground="black")  # Cursor-Farbe
-        self.config(tabs=(f"{self.tab_size}c",))  # Tab-Größe setzen
+        # Veraltete .config Aufrufe entfernt, da sie über kwargs an den Konstruktor übergeben werden
+        # und teilweise mit dem Theme "superhero" in Konflikt stehen.
 
         # Tab-Event-Bindings
-        self.bind("<Tab>", self.handle_tab)
-        self.bind("<Shift-Tab>", self.handle_shift_tab)
-        self.bind("<Return>", self.handle_return)
-        self.bind("<BackSpace>", self.handle_backspace)
+        self.text.bind("<Tab>", self.handle_tab)
+        self.text.bind("<Shift-Tab>", self.handle_shift_tab)
+        self.text.bind("<Return>", self.handle_return)
+        self.text.bind("<BackSpace>", self.handle_backspace)
 
         # Rechtsklick-Menü
         self.create_context_menu()
 
     def create_context_menu(self):
         """Erstellt ein Rechtsklick-Kontextmenü"""
-        self.context_menu = tk.Menu(self, tearoff=0)
+        self.context_menu = tk.Menu(self.text, tearoff=0)
         self.context_menu.add_command(
             label="Ausschneiden", command=lambda: self.event_generate("<<Cut>>")
         )
@@ -734,12 +763,27 @@ class BashScriptEditor(scrolledtext.ScrolledText):
         )
 
         # Rechtsklick-Event binden
-        self.bind("<Button-3>", self.show_context_menu)
+        self.text.bind("<Button-3>", self.show_context_menu)
 
         # Zusätzliche Tastenkombinationen
-        self.bind("<Control-a>", lambda e: self.select_all())
-        self.bind("<Control-d>", lambda e: self.duplicate_line())
-        self.bind("<Control-slash>", lambda e: self.comment_uncomment_selection())
+        self.text.bind("<Control-a>", lambda e: self.select_all())
+        self.text.bind("<Control-d>", lambda e: self.duplicate_line())
+        self.text.bind("<Control-slash>", lambda e: self.comment_uncomment_selection())
+
+    def update_font(self, font_family, font_size):
+        """Aktualisiert die Schriftart des Editors."""
+        new_font = (font_family, font_size)
+        self.text.config(font=new_font)
+        # Sorge dafür, dass die Syntax-Tags die neue Schriftgröße übernehmen, aber ihre Stile beibehalten
+        for tag_name, config in self.highlighter.tag_configs.items():
+            font_config = config.get("font")
+            if font_config and isinstance(font_config, (list, tuple)) and len(font_config) == 3:
+                # Behält den Stil (italic, bold) bei
+                style = font_config[2]
+                self.text.tag_configure(tag_name, font=(font_family, font_size, style))
+            else:
+                # Standard-Schriftart für andere Tags
+                self.text.tag_configure(tag_name, font=new_font)
 
     def show_context_menu(self, event):
         """Zeigt das Kontextmenü an"""

@@ -230,11 +230,18 @@ jobs:
         pip install bandit
         bandit -r . -f json -o bandit-results.json || echo "Bandit completed with warnings"
 
+    - name: Upload bandit results
+      uses: actions/upload-artifact@v4
+      with:
+        name: bandit-results
+        path: bandit-results.json
+
     - name: Run Safety check
       run: |
         python -m pip install --upgrade pip
+        pip install "typer<0.10.0"  # Kompatibilitäts-Fix
         pip install "safety==2.3.5"
-        safety check --file requirements.txt
+        safety check --file requirements.txt --full-report
 
   # Automatisches Versionierung und Release-Erstellung
   version-and-release:
