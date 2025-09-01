@@ -167,7 +167,7 @@ jobs:
     - name: Install documentation dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pdoc3
+        pip install pdoc3 -r requirements.txt
 
     - name: Generate documentation
       run: |
