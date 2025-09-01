@@ -82,3 +82,10 @@ exclude_lines = [
     "pragma: no cover",
     "if __name__ == .__main__.:",
 ]
+
+[tool.semantic_release]
+version_variable = "VERSION"
+upload_to_pypi = false
+branch = "main"
+changelog_file = "CHANGELOG.md"
+build_command = "pip install build && python -m build"

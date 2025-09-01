@@ -271,5 +271,5 @@ jobs:
           git tag v0.1.0
           git push origin v0.1.0
         fi
-        semantic-release publish -D upload_to_pypi=false
+        semantic-release publish
 # Finish
