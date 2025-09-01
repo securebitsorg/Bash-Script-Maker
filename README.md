@@ -3,9 +3,9 @@
 Ein benutzerfreundliches GUI-Programm zur Erstellung von Bash-Scripts mit visueller Unterstützung.
 
 [![CI/CD Pipeline](https://github.com/securebitsorg/Bash-Script-Maker/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/securebitsorg/Bash-Script-Maker/actions/workflows/ci-cd.yml)
-[![PyPI Version](https://img.shields.io/pypi/v/bash-script-maker.svg)](https://pypi.org/project/bash-script-maker/)
-[![Python Versions](https://img.shields.io/pypi/pyversions/bash-script-maker.svg)](https://pypi.org/project/bash-script-maker/)
-[![License](https://img.shields.io/pypi/l/bash-script-maker.svg)](https://opensource.org/licenses/MIT)
+[![PyPI Version](https://img.shields.io/badge/pypi-v1.0.1-blue)](https://pypi.org/project/bash-script-maker/)
+[![Python Versions](https://img.shields.io/badge/python-3.8+-blue.svg)](https://pypi.org/project/bash-script-maker/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub last commit](https://img.shields.io/github/last-commit/securebitsorg/Bash-Script-Maker.svg)](https://github.com/securebitsorg/Bash-Script-Maker/commits/main)
 
 ## Features
