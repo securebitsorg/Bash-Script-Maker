@@ -208,7 +208,8 @@ verify_installation() {
 }
 
 # Hauptprogramm
-print_status "Erkannter Paketmanager: $(detect_package_manager)"
+detect_package_manager
+print_status "Erkannter Paketmanager: $PACKAGE_MANAGER"
 
 echo ""
 read -p "Möchten Sie fortfahren? (j/N): " -n 1 -r
