@@ -90,3 +90,10 @@ upload_to_pypi = false
 branch = "main"
 changelog_file = "CHANGELOG.md"
 build_command = "pip install build && python -m build"
+major_on_zero = false
+tag_format = "v{version}"
+
+[tool.semantic_release.commit_parser_options]
+allowed_tags = ["feat", "fix", "docs", "style", "refactor", "perf", "test", "chore"]
+minor_tags = ["feat"]
+patch_tags = ["fix", "perf"]
