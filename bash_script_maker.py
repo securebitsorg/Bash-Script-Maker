@@ -19,7 +19,6 @@ from syntax_highlighter import EnhancedScriptEditor
 from localization import _, save_language_setting
 import configparser
 from custom_dialogs import askopenfilename, asksaveasfilename
-from assets import github_logo_b64, patreon_logo_b64, kofi_logo_b64
 
 
 class FontSettingsDialog(ttk.Toplevel):
@@ -151,8 +150,29 @@ class AboutDialog(ttk.Toplevel):
         for feature in features:
             ttk.Label(features_frame, text=f"• {feature}").pack(anchor=tk.W)
 
+        # Version dynamisch aus VERSION-Datei lesen (Fallback zu pyproject)
+        version_text = "1.0"
+        try:
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            version_file = os.path.join(base_dir, "VERSION")
+            if os.path.exists(version_file):
+                with open(version_file, "r", encoding="utf-8") as vf:
+                    version_text = vf.read().strip()
+            else:
+                # Optionaler Fallback: pyproject.toml parsen
+                pyproj = os.path.join(base_dir, "pyproject.toml")
+                if os.path.exists(pyproj):
+                    import re
+                    with open(pyproj, "r", encoding="utf-8") as pf:
+                        content = pf.read()
+                        m = re.search(r"^version\s*=\s*\"([^\"]+)\"", content, re.M)
+                        if m:
+                            version_text = m.group(1)
+        except Exception:
+            pass
+
         version_label = ttk.Label(
-            container, text=_("Version: 1.0"), bootstyle="secondary"
+            container, text=_("Version: {}" ).format(version_text), bootstyle="secondary"
         )
         version_label.pack(pady=(15, 0))
 

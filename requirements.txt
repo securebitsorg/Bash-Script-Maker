@@ -11,7 +11,8 @@ tox>=3.20.0
 twine>=3.0.0
 build>=0.7.0
 bandit>=1.7.0
-safety>=2.0.0
+# Pin wegen Typer-Inkompatibilitäten in CI
+safety==2.3.5
 
 # Documentation
 pdoc3>=0.9.0
