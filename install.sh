@@ -225,23 +225,41 @@ install_python_requirements() {
         return 1
     fi
 
-    # Upgrade pip und installiere Anforderungen
-    if python3 -m pip --version &> /dev/null; then
-        if ! python3 -m pip install --upgrade pip; then
-            print_warning "Konnte pip nicht upgraden. Fahre fort."
-        fi
-        if python3 -m pip install -r requirements.txt; then
-            print_success "Python-Abhängigkeiten installiert."
-            return 0
-        else
-            print_warning "Systemweite Installation fehlgeschlagen. Versuche Benutzerinstallation (--user)."
-            if python3 -m pip install --user -r requirements.txt; then
-                print_success "Python-Abhängigkeiten (User) installiert."
-                return 0
+    # Bevorzugt: virtuelles Environment verwenden (vermeidet 'externally-managed-environment')
+    VENV_DIR=".venv"
+    if [ ! -d "$VENV_DIR" ]; then
+        print_status "Erstelle virtuelles Environment in $VENV_DIR ..."
+        if ! python3 -m venv "$VENV_DIR"; then
+            print_warning "Konnte venv nicht erstellen. Prüfe, ob 'python3-venv' installiert ist."
+            # Versuche, venv bereitzustellen (Debian/Ubuntu)
+            if command -v apt &> /dev/null; then
+                sudo apt update && sudo apt install -y python3-venv || true
+                python3 -m venv "$VENV_DIR" || true
             fi
         fi
+    fi
+
+    if [ -x "$VENV_DIR/bin/pip" ]; then
+        print_status "Aktiviere venv und installiere Requirements ..."
+        "$VENV_DIR/bin/pip" install --upgrade pip
+        if "$VENV_DIR/bin/pip" install -r requirements.txt; then
+            print_success "Requirements in venv installiert."
+            echo "$VENV_DIR" > .venv_path
+            return 0
+        else
+            print_warning "Installation in venv fehlgeschlagen. Fallback auf Benutzerinstallation (--user)."
+        fi
+    fi
+
+    # Fallback: Benutzerinstallation
+    if python3 -m pip --version &> /dev/null; then
+        python3 -m pip install --upgrade pip || true
+        if python3 -m pip install --user -r requirements.txt; then
+            print_success "Python-Abhängigkeiten (User) installiert."
+            return 0
+        fi
     else
-        print_error "pip ist nicht verfügbar. Bitte installieren Sie 'python3-pip' und versuchen es erneut."
+        print_error "pip ist nicht verfügbar. Bitte installieren Sie 'python3-pip'."
     fi
 
     print_error "Installation der Python-Abhängigkeiten fehlgeschlagen."

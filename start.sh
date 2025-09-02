@@ -34,6 +34,17 @@ if ! command -v zenity &> /dev/null; then
     read
 fi
 
-# Starte das Programm
+# Starte das Programm (bevorzugt in venv, falls vorhanden)
 cd "$(dirname "$0")"
-python3 bash_script_maker.py
+
+if [ -f ".venv_path" ]; then
+    VENV_DIR=$(cat .venv_path)
+elif [ -d ".venv" ]; then
+    VENV_DIR=".venv"
+fi
+
+if [ -n "$VENV_DIR" ] && [ -x "$VENV_DIR/bin/python" ]; then
+    "$VENV_DIR/bin/python" bash_script_maker.py
+else
+    python3 bash_script_maker.py
+fi
