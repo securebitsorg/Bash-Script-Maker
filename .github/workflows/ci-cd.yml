@@ -279,6 +279,15 @@ jobs:
         python -m pip install --upgrade pip
         pip install python-semantic-release
 
+    - name: Debug Git History
+      run: |
+        echo "=== Git Tags ==="
+        git tag --list
+        echo "=== Recent Commits ==="
+        git log --oneline -10
+        echo "=== Commits since v1.1.0 ==="
+        git log --oneline v1.1.0..HEAD || echo "No commits since v1.1.0 found"
+
     - name: Semantic Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -286,6 +295,9 @@ jobs:
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        echo "=== Semantic Release Debug ==="
+        semantic-release --noop publish
+        echo "=== Actual Release ==="
         semantic-release publish
 
 # Finish
