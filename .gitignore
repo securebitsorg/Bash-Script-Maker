@@ -157,4 +157,7 @@ test_results/
 .temp/
 .env
 Environments
+
+# md files
+AUTOMATIC_RELEASES.md
 # Finish
