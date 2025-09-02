@@ -291,6 +291,27 @@ jobs:
         echo "=== Commits since v1.1.0 ==="
         git log --oneline v1.1.0..HEAD || echo "No commits since v1.1.0 found"
 
+    - name: Ensure baseline tag exists when missing
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        set -e
+        git fetch --tags --force
+        EXISTING_TAGS=$(git tag -l 'v*' | wc -l)
+        if [ "$EXISTING_TAGS" -eq 0 ]; then
+          echo "No tags found. Creating baseline tag from VERSION file."
+          BASELINE_VERSION=$(cat VERSION | tr -d '\n\r')
+          if [ -z "$BASELINE_VERSION" ]; then
+            echo "VERSION file empty or missing" && exit 1
+          fi
+          BASELINE_TAG="v${BASELINE_VERSION}"
+          echo "Creating baseline tag ${BASELINE_TAG} at HEAD"
+          git tag -a "$BASELINE_TAG" -m "chore(release): baseline $BASELINE_TAG"
+          git push origin "$BASELINE_TAG"
+        else
+          echo "Found existing tags; skipping baseline creation"
+        fi
+
     - name: Semantic Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -299,7 +320,7 @@ jobs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         echo "=== Semantic Release Debug ==="
-        semantic-release --noop publish
+        semantic-release --noop publish || echo "semantic-release noop exited non-zero; continuing"
         echo "=== Actual Release ==="
         semantic-release publish
         
