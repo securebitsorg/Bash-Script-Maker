@@ -68,7 +68,7 @@ Ein benutzerfreundliches GUI-Programm zur Erstellung von Bash-Scripts mit visuel
 
 **Empfohlene Methode (automatische Erkennung):**
 ```bash
-git clone https://github.com/yourusername/bash-script-maker.git
+git clone https://github.com/securebitsorg/bash-script-maker.git
 cd bash-script-maker
 ./install.sh
 ```
