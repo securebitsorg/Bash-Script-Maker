@@ -360,4 +360,4 @@ Dieses Projekt steht unter der MIT-Lizenz. Siehe LICENSE-Datei für Details.
 
 ## Autor
 
-Erstellt von Marcel Dellmann mit ❤️ für Bash-Script-Enthusiasten
+Erstellt von Marcel Dellmann mit ❤️ für Bash-Script-Enthusiasten\n> Automatisches Release: Testeintrag.
