@@ -140,7 +140,7 @@ jobs:
         python -m twine upload dist/*
         python -m twine upload dist/*
 
-    # Hinweis: Ersetzen Sie 'IhrGithubBenutzername' durch Ihren tatsächlichen GitHub-Benutzernamen.
+    
     # Stellen Sie sicher, dass das PyPI-Token als Secret gesetzt ist.
 
     - name: Publish to GitHub Packages
