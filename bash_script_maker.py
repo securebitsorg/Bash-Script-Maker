@@ -163,6 +163,7 @@ class AboutDialog(ttk.Toplevel):
                 pyproj = os.path.join(base_dir, "pyproject.toml")
                 if os.path.exists(pyproj):
                     import re
+
                     with open(pyproj, "r", encoding="utf-8") as pf:
                         content = pf.read()
                         m = re.search(r"^version\s*=\s*\"([^\"]+)\"", content, re.M)
@@ -172,7 +173,7 @@ class AboutDialog(ttk.Toplevel):
             pass
 
         version_label = ttk.Label(
-            container, text=_("Version: {}" ).format(version_text), bootstyle="secondary"
+            container, text=_("Version: {}").format(version_text), bootstyle="secondary"
         )
         version_label.pack(pady=(15, 0))
 
