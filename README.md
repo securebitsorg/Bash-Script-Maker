@@ -3,10 +3,13 @@
 Ein benutzerfreundliches GUI-Programm zur Erstellung von Bash-Scripts mit visueller Unterstützung.
 
 [![CI/CD Pipeline](https://github.com/securebitsorg/Bash-Script-Maker/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/securebitsorg/Bash-Script-Maker/actions/workflows/ci-cd.yml)
-[![PyPI Version](https://img.shields.io/badge/pypi-v1.1.0-blue)](https://pypi.org/project/bash-script-maker/)
-[![Python Versions](https://img.shields.io/badge/python-3.8+-blue.svg)](https://pypi.org/project/bash-script-maker/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![GitHub last commit](https://img.shields.io/github/last-commit/securebitsorg/Bash-Script-Maker.svg)](https://github.com/securebitsorg/Bash-Script-Maker/commits/main)
+[![GitHub Release](https://img.shields.io/github/v/release/securebitsorg/Bash-Script-Maker?include_prereleases&sort=semver)](https://github.com/securebitsorg/Bash-Script-Maker/releases)
+[![PyPI Version](https://img.shields.io/pypi/v/bash-script-maker)](https://pypi.org/project/bash-script-maker/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/bash-script-maker)](https://pypi.org/project/bash-script-maker/)
+[![License](https://img.shields.io/github/license/securebitsorg/Bash-Script-Maker)](https://opensource.org/licenses/MIT)
+[![GitHub last commit](https://img.shields.io/github/last-commit/securebitsorg/Bash-Script-Maker)](https://github.com/securebitsorg/Bash-Script-Maker/commits/main)
+[![Downloads](https://img.shields.io/github/downloads/securebitsorg/Bash-Script-Maker/total)](https://github.com/securebitsorg/Bash-Script-Maker/releases)
+[![Issues](https://img.shields.io/github/issues/securebitsorg/Bash-Script-Maker)](https://github.com/securebitsorg/Bash-Script-Maker/issues)
 
 ## Features
 
@@ -214,24 +217,31 @@ Das Programm erstellt automatisch ein grundlegendes Script-Template:
 
 ## CI/CD Pipeline
 
-Dieses Projekt verwendet GitHub Actions für kontinuierliche Integration und Bereitstellung.
-
-
-Check failure on line 144 in .github/workflows/ci-cd.yml
-GitHub Actions / .github/workflows/ci-cd.yml
-
-Invalid workflow file
-
-You have an error in your yaml syntax on line 144
-
+Dieses Projekt verwendet GitHub Actions für kontinuierliche Integration und automatische Releases.
 
 - **CI/CD Pipeline** (`.github/workflows/ci-cd.yml`):
-  - Tests auf Python 3.6-3.11
+  - Tests auf Python 3.8-3.12
   - Code-Qualität-Checks (Flake8, Black, MyPy)
-  - Automatische Releases
+  - **Automatische Releases mit semantic-release**
   - Package-Publishing zu PyPI und GitHub Packages
   - Docker-Image-Erstellung
   - Dokumentationsgenerierung
+  - Sicherheitsscans (Bandit, Safety)
+
+### Automatische Releases
+
+Das Projekt verwendet [Conventional Commits](https://www.conventionalcommits.org/) für automatische Versionierung:
+
+- `feat:` → Minor Release (1.1.0 → 1.2.0)
+- `fix:` → Patch Release (1.1.0 → 1.1.1)
+- `BREAKING CHANGE:` → Major Release (1.1.0 → 2.0.0)
+
+**Beispiel-Commits:**
+```bash
+git commit -m "feat: add new syntax highlighting theme"
+git commit -m "fix: resolve tab indentation bug"
+git commit -m "docs: update installation instructions"
+```
 
 - **Security Scan** (`.github/workflows/security-scan.yml`):
   - Security-Scans mit Bandit und Safety

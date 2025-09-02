@@ -132,16 +132,12 @@ jobs:
         path: dist/
 
     - name: Publish to PyPI
-      if: github.repository_owner == 'securebitsorg' && github.event_name == 'release' && github.event.action == 'published' && env.PYPI_API_TOKEN != ''
+      if: github.repository_owner == 'securebitsorg' && github.event_name == 'release' && github.event.action == 'published' && secrets.PYPI_API_TOKEN != ''
       env:
         TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ env.PYPI_API_TOKEN }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
       run: |
         python -m twine upload dist/*
-        python -m twine upload dist/*
-
-    
-    # Stellen Sie sicher, dass das PyPI-Token als Secret gesetzt ist.
 
     - name: Publish to GitHub Packages
       if: github.repository_owner == 'securebitsorg'  
@@ -282,17 +278,29 @@ jobs:
         python -m pip install --upgrade pip
         pip install python-semantic-release
 
+    - name: Check for existing tags
+      id: check-tags
+      run: |
+        if git describe --tags --abbrev=0 2>/dev/null; then
+          echo "has_tags=true" >> $GITHUB_OUTPUT
+        else
+          echo "has_tags=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Create initial tag if none exists
+      if: steps.check-tags.outputs.has_tags == 'false'
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git tag v1.1.0
+        git push origin v1.1.0
+
     - name: Semantic Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        # Create an initial tag if no tags are present
-        if ! git describe --tags --abbrev=0; then
-          git tag v0.1.0
-          git push origin v0.1.0
-        fi
         semantic-release publish
 
 # Finish
