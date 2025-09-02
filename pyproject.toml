@@ -9,10 +9,10 @@ description = "Ein GUI-Programm zur Erstellung von Bash-Scripts mit visueller Un
 readme = "README.md"
 license = "MIT"
 authors = [
-    {name = "Marc", email = "your-email@example.com"},
+    {name = "Marcel Dellmann", email = "support@secure-bits.org"},
 ]
 maintainers = [
-    {name = "Marc", email = "your-email@example.com"},
+    {name = "Marcel Dellmann", email = "support@secure-bits.org"},
 ]
 keywords = ["bash", "script", "gui", "editor", "generator", "linux"]
 classifiers = [
@@ -85,6 +85,7 @@ exclude_lines = [
 
 [tool.semantic_release]
 version_variable = "VERSION"
+upload_to_release = true
 upload_to_pypi = false
 branch = "main"
 changelog_file = "CHANGELOG.md"
