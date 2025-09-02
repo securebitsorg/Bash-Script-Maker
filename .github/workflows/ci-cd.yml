@@ -309,9 +309,20 @@ jobs:
             echo "VERSION file empty or missing" && exit 1
           fi
           BASELINE_TAG="v${BASELINE_VERSION}"
-          echo "Creating baseline tag ${BASELINE_TAG} at HEAD"
-          git tag -a "$BASELINE_TAG" -m "chore(release): baseline $BASELINE_TAG"
-          git push origin "$BASELINE_TAG"
+          # Falls Tag lokal bereits existiert, nicht neu erstellen
+          if git rev-parse -q --verify "refs/tags/$BASELINE_TAG" >/dev/null; then
+            echo "Baseline tag $BASELINE_TAG already exists locally; skipping creation"
+          else
+            # Prüfe, ob Tag bereits auf Remote existiert
+            if git ls-remote --exit-code --tags origin "$BASELINE_TAG" >/dev/null 2>&1; then
+              echo "Baseline tag $BASELINE_TAG exists on remote; syncing local tags and skipping creation"
+              git fetch --tags --force
+            else
+              echo "Creating baseline tag ${BASELINE_TAG} at HEAD"
+              git tag -a "$BASELINE_TAG" -m "chore(release): baseline $BASELINE_TAG"
+              git push origin "$BASELINE_TAG"
+            fi
+          fi
         else
           echo "Found existing tags; skipping baseline creation"
         fi
