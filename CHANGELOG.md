@@ -52,7 +52,7 @@ Dieses Projekt verwendet [Semantic Versioning](https://semver.org/):
 
 ## Beitragen
 
-Bitte lesen Sie [CONTRIBUTING.md](CONTRIBUTING.md) für Details zum Beitragen an dieses Projekt.
+Bitte lese die [CONTRIBUTING.md](CONTRIBUTING.md) für Details zum Beitragen an dieses Projekt.
 
 ## Support
 
