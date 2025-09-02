@@ -206,7 +206,9 @@ jobs:
       id: meta
       uses: docker/metadata-action@v5
       with:
-        images: ghcr.io/${{ steps.repo.outputs.name }}cenv.testpypi
+        images: ghcr.io/${{ steps.repo.outputs.name }}
+        tags: |
+          type=ref,event=branch
           type=ref,event=pr
           type=ref,event=tag
           # Immer 'latest' Tag für den Default-Branch
@@ -261,6 +263,8 @@ jobs:
       repository-projects: write
       packages: write
       actions: write
+    env:
+      testpypi: ${{ secrets.TEST_PYPI_API_TOKEN }}
 
     steps:
     - uses: actions/checkout@v4
@@ -327,7 +331,7 @@ jobs:
     - name: Download build artifacts for release (Fallback)
       if: success()
       uses: actions/download-artifact@v4
-      with:c
+      with:
         name: python-package
         path: dist/
 
