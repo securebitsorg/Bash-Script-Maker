@@ -1,6 +1,6 @@
 # Contributing to Bash-Script-Maker
 
-Danke, dass Sie zu Bash-Script-Maker beitragen möchten! Wir freuen uns über alle Beiträge, die unser Projekt verbessern.
+Danke, dass du zu Bash-Script-Maker beitragen möchtest! Wir freuen uns über alle Beiträge, die unser Projekt verbessern.
 
 ## Entwicklungsumgebung einrichten
 
@@ -38,9 +38,9 @@ git checkout -b fix/issue-number
 ```
 
 ### 2. Code schreiben
-- Folgen Sie dem bestehenden Code-Stil
-- Schreiben Sie aussagekräftige Commit-Nachrichten
-- Testen Sie Ihre Änderungen
+- Folge dem bestehenden Code-Stil
+- Schreibe aussagekräftige Commit-Nachrichten
+- Teste deine Änderungen
 
 ### 3. Pre-commit Checks
 ```bash
@@ -55,22 +55,22 @@ tox -e py39,lint,type
 ```
 
 ### 5. Pull Request erstellen
-- Pushen Sie Ihren Branch
-- Erstellen Sie einen Pull Request auf GitHub
-- Beschreiben Sie Ihre Änderungen detailliert
+- Pushen deinen Branch
+- Erstelle einen Pull Request auf GitHub
+- Beschreibe deine Änderungen detailliert
 
 ## Code-Standards
 
 ### Python
-- Verwenden Sie Black für Code-Formatierung
-- Folgen Sie PEP 8
-- Verwenden Sie Type Hints wo möglich
-- Schreiben Sie Docstrings für alle öffentlichen Funktionen
+- Verwende **Black** für die Code-Formatierung
+- Folge PEP 8
+- Verwende Type Hints wo möglich
+- Schreibe Docstrings für alle öffentlichen Funktionen
 
 ### Git Commits
-- Verwenden Sie prägnante, beschreibende Commit-Nachrichten
-- Beginnen Sie mit einem Verb (Add, Fix, Update, Remove)
-- Referenzieren Sie Issues mit `#issue-number`
+- Verwende prägnante, beschreibende Commit-Nachrichten
+- Beginne mit einem Verb (Add, Fix, Update, Remove)
+- Referenziere Issues mit `#issue-number`
 
 Beispiele:
 ```
@@ -107,14 +107,14 @@ black --check bash_script_maker.py syntax_highlighter.py
 ## Dokumentation
 
 ### Code-Dokumentation
-- Verwenden Sie Docstrings im Google-Style
-- Dokumentieren Sie alle Parameter, Rückgabewerte und Ausnahmen
-- Halten Sie Kommentare auf Englisch
+- Verwende Docstrings im Google-Style
+- Dokumentiere alle Parameter, Rückgabewerte und Ausnahmen
+- Halte Kommentare auf Englisch
 
 ### Projekt-Dokumentation
-- Aktualisieren Sie README.md bei neuen Features
-- Fügen Sie Änderungen zu CHANGELOG.md hinzu
-- Aktualisieren Sie diese CONTRIBUTING.md bei Bedarf
+- Aktualisiere die README.md bei neuen Features
+- Füge Änderungen zu CHANGELOG.md hinzu
+- Aktualisiere diese CONTRIBUTING.md bei Bedarf
 
 ## Releases
 
@@ -140,20 +140,20 @@ git push origin v2.0.0
 
 ## Sicherheit
 
-- Melden Sie Sicherheitslücken nicht öffentlich
-- Kontaktieren Sie die Maintainers direkt
-- Verwenden Sie keine unsicheren Abhängigkeiten
-- Führen Sie Security-Scans durch: `bandit -r .`
+- Melde Sicherheitslücken nicht öffentlich!!!
+- Kontaktiere die Maintainers direkt
+- Verwende keine unsicheren Abhängigkeiten
+- Führe einen Security-Scans durch: `bandit -r .`
 
 ## Lizenz
 
-Durch das Beitragen zu diesem Projekt stimmen Sie zu, dass Ihre Beiträge unter der MIT-Lizenz stehen.
+Durch das Beitragen zu diesem Projekt stimmst du zu, dass deine Beiträge unter der MIT-Lizenz stehen.
 
 ## Fragen?
 
 Bei Fragen:
-- Öffnen Sie ein [GitHub Issue](https://github.com/securebitsorg/bash-script-maker/issues)
-- Schreiben Sie in [GitHub Discussions](https://github.com/securebitsorg/bash-script-maker/discussions)
-- Kontaktieren Sie die Maintainers
+- Öffnen einen [GitHub Issue](https://github.com/securebitsorg/bash-script-maker/issues)
+- Schreibe in [GitHub Discussions](https://github.com/securebitsorg/bash-script-maker/discussions)
+- Kontaktiere die Maintainers
 
-Vielen Dank für Ihren Beitrag! 🚀
+Vielen Dank für deinen Beitrag! 🚀
