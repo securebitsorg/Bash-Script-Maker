@@ -206,6 +206,10 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Sanitize ref name for Docker tag
+      id: branch_name
+      run: echo "sanitized=$(echo ${{ github.ref_name }} | sed 's/[^a-zA-Z0-9.-]/-/g')" >> $GITHUB_OUTPUT
+
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
@@ -213,7 +217,7 @@ jobs:
         push: true
         tags: |
           ghcr.io/${{ steps.repo.outputs.name }}:latest
-          ghcr.io/${{ steps.repo.outputs.name }}:${{ github.ref_name }}
+          ghcr.io/${{ steps.repo.outputs.name }}:${{ steps.branch_name.outputs.sanitized }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
