@@ -279,32 +279,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install python-semantic-release
 
-    - name: Semantic Release (dry-run)
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        semantic-release --noop publish
-
-    - name: Check for existing tags
-      id: check-tags
-      run: |
-        if git describe --tags --abbrev=0 2>/dev/null; then
-          echo "has_tags=true" >> $GITHUB_OUTPUT
-        else
-          echo "has_tags=false" >> $GITHUB_OUTPUT
-        fi
-
-    - name: Create initial tag if none exists
-      if: steps.check-tags.outputs.has_tags == 'false'
-      run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git tag v1.1.0
-        git push origin v1.1.0
-
     - name: Semantic Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -312,6 +286,6 @@ jobs:
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        semantic-release publish
+        semantic-release publish --verbosity=DEBUG
 
 # Finish

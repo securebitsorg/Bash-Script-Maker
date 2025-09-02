@@ -93,10 +93,3 @@ major_on_zero = false
 tag_format = "v{version}"
 commit_parser = "angular"
 
-[tool.semantic_release.branches.main]
-match = "main"
-prerelease = false
-
-[tool.semantic_release.changelog.default_templates]
-changelog_file = "CHANGELOG.md"
-
