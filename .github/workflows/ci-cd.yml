@@ -206,18 +206,26 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Sanitize ref name for Docker tag
-      id: branch_name
-      run: echo "sanitized=$(echo ${{ github.ref_name }} | sed 's/[^a-zA-Z0-9.-]/-/g')" >> $GITHUB_OUTPUT
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ghcr.io/${{ steps.repo.outputs.name }}
+        tags: |
+          # Git-Branch oder Tag als Tag verwenden
+          type=ref,event=branch
+          type=ref,event=pr
+          type=ref,event=tag
+          # Immer 'latest' Tag für den Default-Branch
+          type=raw,value=latest,enable={{is_default_branch}}
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
         context: .
         push: true
-        tags: |
-          ghcr.io/${{ steps.repo.outputs.name }}:latest
-          ghcr.io/${{ steps.repo.outputs.name }}:${{ steps.branch_name.outputs.sanitized }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
