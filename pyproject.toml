@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bash-script-maker"
-dynamic = ["version"]
+version = "1.1.0"
 description = "Ein GUI-Programm zur Erstellung von Bash-Scripts mit visueller Unterstützung"
 readme = "README.md"
 license = "MIT"
@@ -60,8 +60,7 @@ py-modules = ["bash_script_maker", "syntax_highlighter"]
 include-package-data = true
 zip-safe = false
 
-[tool.setuptools.dynamic]
-version = {file = "VERSION"}
+
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -84,7 +83,7 @@ exclude_lines = [
 ]
 
 [tool.semantic_release]
-version_variable = "VERSION"
+version_toml = ["pyproject.toml:project.version"]
 upload_to_release = true
 upload_to_pypi = false
 branch = "main"
