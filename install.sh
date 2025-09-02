@@ -204,7 +204,48 @@ verify_installation() {
         return 1
     fi
 
+    # Python-Paket: ttkbootstrap
+    if python3 -c "import ttkbootstrap; print('ttkbootstrap OK')" &> /dev/null; then
+        print_success "Python-Paket 'ttkbootstrap' installiert"
+    else
+        print_error "Python-Paket 'ttkbootstrap' fehlt!"
+        return 1
+    fi
+
     return 0
+}
+
+# Python-Abhängigkeiten installieren
+install_python_requirements() {
+    print_status "Installiere Python-Abhängigkeiten aus requirements.txt ..."
+
+    # Stelle sicher, dass pip verfügbar ist
+    if ! command -v python3 &> /dev/null; then
+        print_error "python3 nicht gefunden. Bitte installieren und erneut versuchen."
+        return 1
+    fi
+
+    # Upgrade pip und installiere Anforderungen
+    if python3 -m pip --version &> /dev/null; then
+        if ! python3 -m pip install --upgrade pip; then
+            print_warning "Konnte pip nicht upgraden. Fahre fort."
+        fi
+        if python3 -m pip install -r requirements.txt; then
+            print_success "Python-Abhängigkeiten installiert."
+            return 0
+        else
+            print_warning "Systemweite Installation fehlgeschlagen. Versuche Benutzerinstallation (--user)."
+            if python3 -m pip install --user -r requirements.txt; then
+                print_success "Python-Abhängigkeiten (User) installiert."
+                return 0
+            fi
+        fi
+    else
+        print_error "pip ist nicht verfügbar. Bitte installieren Sie 'python3-pip' und versuchen es erneut."
+    fi
+
+    print_error "Installation der Python-Abhängigkeiten fehlgeschlagen."
+    return 1
 }
 
 # Hauptprogramm
@@ -222,6 +263,12 @@ fi
 # Installation durchführen
 if main_installation; then
     echo ""
+    # Python-Abhängigkeiten
+    if ! install_python_requirements; then
+        print_error "Python-Abhängigkeiten konnten nicht installiert werden."
+        exit 1
+    fi
+
     if verify_installation; then
         echo ""
         print_success "=== INSTALLATION ERFOLGREICH ABGESCHLOSSEN ==="
