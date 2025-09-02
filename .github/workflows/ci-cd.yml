@@ -286,7 +286,7 @@ jobs:
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        semantic-release publish -v --noop
+        semantic-release --noop publish
 
     - name: Check for existing tags
       id: check-tags
