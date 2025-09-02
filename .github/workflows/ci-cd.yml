@@ -262,6 +262,8 @@ jobs:
       pull-requests: write
       issues: write
       repository-projects: write
+      packages: write
+      actions: write
 
     steps:
     - uses: actions/checkout@v4
@@ -299,5 +301,23 @@ jobs:
         semantic-release --noop publish
         echo "=== Actual Release ==="
         semantic-release publish
+        
+    - name: Create GitHub Release (Fallback)
+      if: success()
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        # Prüfe ob ein neuer Tag erstellt wurde
+        LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+        if [ -n "$LATEST_TAG" ] && [ "$LATEST_TAG" != "v1.1.0" ]; then
+          echo "Creating GitHub Release for $LATEST_TAG"
+          gh release create "$LATEST_TAG" \
+            --title "$LATEST_TAG" \
+            --notes "Automatisches Release erstellt durch semantic-release" \
+            --generate-notes \
+            dist/* || echo "Release creation failed or already exists"
+        else
+          echo "No new tag found, skipping GitHub Release creation"
+        fi
 
 # Finish
