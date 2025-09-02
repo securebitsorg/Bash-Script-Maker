@@ -294,6 +294,9 @@ jobs:
       run: |
         set -e
         git fetch --tags --force
+        # Set committer identity for creating tags
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
         EXISTING_TAGS=$(git tag -l 'v*' | wc -l)
         if [ "$EXISTING_TAGS" -eq 0 ]; then
           echo "No tags found. Creating baseline tag from VERSION file."
