@@ -132,7 +132,7 @@ jobs:
         path: dist/
 
     - name: Publish to PyPI
-      if: github.repository_owner == 'securebitsorg' && github.event_name == 'release' && github.event.action == 'published' && secrets.PYPI_API_TOKEN != ''
+      if: github.repository_owner == 'securebitsorg' && github.event_name == 'release' && github.event.action == 'published'
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
