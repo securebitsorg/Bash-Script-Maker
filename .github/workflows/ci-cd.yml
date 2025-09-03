@@ -135,7 +135,7 @@ jobs:
       if: github.repository_owner == 'securebitsorg' && github.event_name == 'release' && github.event.action == 'published'
       env:
         TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ env.testpypi }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
       run: |
         python -m twine upload dist/*
 
@@ -264,7 +264,7 @@ jobs:
       packages: write
       actions: write
     env:
-      testpypi: ${{ secrets.TEST_PYPI_API_TOKEN }}
+      testpypi: ${{ secrets.PYPI_API_TOKEN }}
 
     steps:
     - uses: actions/checkout@v4
@@ -356,7 +356,7 @@ jobs:
       if: success() && env.testpypi != ''
       env:
         TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ env.testpypi }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
       run: |
         python -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
