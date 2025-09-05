@@ -290,6 +290,6 @@ jobs:
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
       run: |
         pip install python-semantic-release
-        semantic-release publish --verbose
+        semantic-release -v DEBUG publish
 
 # Finish
