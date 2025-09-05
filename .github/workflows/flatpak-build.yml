@@ -16,21 +16,16 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       
-    - name: Setup Flatpak
-      uses: flatpak/setup-flatpak@v1
-      with:
-        flatpak-version: latest
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y flatpak flatpak-builder python3-pip python3-setuptools
         
-    - name: Install Flatpak dependencies
+    - name: Setup Flatpak
       run: |
         flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
         flatpak install -y flathub org.freedesktop.Platform//23.08
         flatpak install -y flathub org.freedesktop.Sdk//23.08
-        
-    - name: Install Python dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y python3-pip python3-setuptools
         
     - name: Build Flatpak package
       run: |
