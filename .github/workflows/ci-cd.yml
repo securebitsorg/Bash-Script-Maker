@@ -286,10 +286,11 @@ jobs:
 
     - name: Semantic Release
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+          LOG_LEVEL: DEBUG
       run: |
-        pip install python-semantic-release
-        semantic-release -v DEBUG publish
+          pip install python-semantic-release
+          semantic-release publish
 
 # Finish
