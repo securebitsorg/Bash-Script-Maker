@@ -277,12 +277,17 @@ jobs:
 
     - name: Debug Git History
       run: |
-        echo "--- CURRENT BRANCH ---"
+       echo "--- CURRENT BRANCH ---"
         git branch --show-current
-        echo "--- LATEST TAGS ---"
-        git tag --list | tail -n 5
-        echo "--- RECENT COMMITS ---"
-        git log --oneline -n 10
+        LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "none")
+        echo "--- LATEST TAG FOUND: ${LATEST_TAG} ---"
+        if [ "$LATEST_TAG" != "none" ]; then
+          echo "--- COMMITS SINCE ${LATEST_TAG} ---"
+          git log --oneline ${LATEST_TAG}..HEAD
+        else
+          echo "--- ALL COMMITS (no tags found) ---"
+          git log --oneline
+        fi
 
     - name: Semantic Release
       env:
