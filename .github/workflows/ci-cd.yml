@@ -262,8 +262,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        fetch-depth: 0
-        fetch-tags: true
+        fetch-depth: 0 # WICHTIG: Volle Historie für semantic-release
         token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Set up Python
@@ -271,65 +270,16 @@ jobs:
       with:
         python-version: ${{ env.PYTHON_VERSION }}
 
-    - name: Install semantic-release
+    - name: Configure Git
       run: |
-        python -m pip install --upgrade pip
-        pip install python-semantic-release
-
-    - name: Debug Git History
-      run: |
-        echo "=== Git Tags ==="
-        git tag --list
-        echo "=== Recent Commits ==="
-        git log --oneline -10
-        echo "=== Commits since v1.1.0 ==="
-        git log --oneline v1.1.0..HEAD || echo "No commits since v1.1.0 found"
-
-    - name: Ensure baseline tag exists when missing
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        set -e
-        git fetch --tags --force
-        # Set committer identity for creating tags
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-        EXISTING_TAGS=$(git tag -l 'v*' | wc -l)
-        if [ "$EXISTING_TAGS" -eq 0 ]; then
-          echo "No tags found. Creating baseline tag from VERSION file."
-          BASELINE_VERSION=$(cat VERSION | tr -d '\n\r')
-          if [ -z "$BASELINE_VERSION" ]; then
-            echo "VERSION file empty or missing" && exit 1
-          fi
-          BASELINE_TAG="v${BASELINE_VERSION}"
-          # Falls Tag lokal bereits existiert, nicht neu erstellen
-          if git rev-parse -q --verify "refs/tags/$BASELINE_TAG" >/dev/null; then
-            echo "Baseline tag $BASELINE_TAG already exists locally; skipping creation"
-          else
-            # Prüfe, ob Tag bereits auf Remote existiert
-            if git ls-remote --exit-code --tags origin "$BASELINE_TAG" >/dev/null 2>&1; then
-              echo "Baseline tag $BASELINE_TAG exists on remote; syncing local tags and skipping creation"
-              git fetch --tags --force
-            else
-              echo "Creating baseline tag ${BASELINE_TAG} at HEAD"
-              git tag -a "$BASELINE_TAG" -m "chore(release): baseline $BASELINE_TAG"
-              git push origin "$BASELINE_TAG"
-            fi
-          fi
-        else
-          echo "Found existing tags; skipping baseline creation"
-        fi
 
     - name: Semantic Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        echo "=== Semantic Release Debug ==="
-        semantic-release --noop publish || echo "semantic-release noop exited non-zero; continuing"
-        echo "=== Actual Release ==="
+        pip install python-semantic-release
         semantic-release publish
         
     - name: Download build artifacts for release (Fallback)
