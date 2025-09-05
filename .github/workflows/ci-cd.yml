@@ -18,6 +18,7 @@ env:
 jobs:
   # Test-Job für verschiedene Python-Versionen
   test:
+    needs: purge-caches
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -233,6 +234,7 @@ jobs:
   # Security-Scan
   security:
     name: Security Scan
+    needs: purge-caches
     runs-on: ubuntu-latest
 
     steps:
