@@ -1,66 +1,54 @@
-name: Build Flatpak Package
+name: Build Flatpak
 
+# Trigger only when a new release is published
 on:
-  push:
-    branches: [ main ]
-    tags: [ 'v*' ]
-  pull_request:
-    branches: [ main ]
-  workflow_dispatch:
+  release:
+    types: [published]
 
 jobs:
   build-flatpak:
+    name: Build Flatpak Package
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y flatpak flatpak-builder python3-pip python3-setuptools
-        
-    - name: Setup Flatpak
-      run: |
-        sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-        sudo flatpak install -y flathub org.freedesktop.Platform//23.08
-        sudo flatpak install -y flathub org.freedesktop.Sdk//23.08
-        
-    - name: Build Flatpak package
-      run: |
-        chmod +x build_flatpak.sh
-        ./build_flatpak.sh
-        
-    - name: Upload Flatpak bundle
-      uses: actions/upload-artifact@v4
-      with:
-        name: bash-script-maker-flatpak
-        path: build/flatpak/bash-script-maker.flatpak
-        retention-days: 30
-        
-    - name: Create Release (on tag)
-      if: startsWith(github.ref, 'refs/tags/')
-      uses: softprops/action-gh-release@v1
-      with:
-        files: build/flatpak/bash-script-maker.flatpak
-        body: |
-          ## Flatpak Package
-          
-          ### Installation
-          ```bash
-          flatpak install bash-script-maker.flatpak
-          ```
-          
-          ### Verwendung
-          ```bash
-          flatpak run org.securebits.bashscriptmaker
-          ```
-          
-          ### Features
-          - Vollständig sandboxed
-          - Automatische Updates
-          - Desktop-Integration
-          - Keine System-Abhängigkeiten
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Read version from file
+        id: version
+        run: echo "VERSION=$(cat VERSION)" >> $GITHUB_OUTPUT
+
+      - name: Set up Flatpak builder
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y flatpak flatpak-builder
+          flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+      - name: Cache Flatpak builder dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/flatpak-builder
+          key: ${{ runner.os }}-flatpak-builder-${{ hashFiles('build/flatpak/**.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-flatpak-builder-
+
+      - name: Build Flatpak
+        run: |
+          cd build/flatpak
+          flatpak-builder --user --install-deps-from=flathub --force-clean --share=network build-dir org.securebits.bashscriptmaker.yml
+
+      - name: Create Flatpak Bundle
+        run: |
+          cd build/flatpak
+          flatpak build-bundle repo bash-script-maker.flatpak org.securebits.bashscriptmaker
+
+      - name: Rename Bundle with Version
+        run: |
+          mv build/flatpak/bash-script-maker.flatpak BashScriptMaker-${{ steps.version.outputs.VERSION }}.flatpak
+
+      - name: Upload Flatpak Bundle as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flatpak-bundle
+          path: BashScriptMaker-${{ steps.version.outputs.VERSION }}.flatpak
+          retention-days: 7
