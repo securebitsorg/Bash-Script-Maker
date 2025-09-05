@@ -1,4 +1,4 @@
-name: Cleanup Caches (TEMPORARY - DELETES ALL)
+name: Cleanup Old Caches
 
 on:
   schedule:
@@ -12,26 +12,29 @@ jobs:
   cleanup-caches:
     runs-on: ubuntu-latest
     steps:
-      - name: Delete ALL caches
+      - name: Delete caches older than 7 days
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "Fetching all repository caches to delete them..."
-          cache_ids_to_delete=$(gh api --paginate "repos/${{ github.repository }}/actions/caches" | jq '.actions_caches[] | .id')
+          echo "Fetching repository caches..."
+          # The API is limited to 100 results per page, --paginate handles this.
+          # We filter for caches older than 7 days (604800 seconds) and extract their IDs.
+          cache_ids_to_delete=$(gh api --paginate "repos/${{ github.repository }}/actions/caches" | \
+            jq '.actions_caches[] | select((.created_at | fromdate) < (now - 604800)) | .id')
 
           if [ -z "$cache_ids_to_delete" ]; then
-            echo "No caches found to delete."
+            echo "No caches older than 7 days found."
             exit 0
           fi
 
-          echo "The following cache IDs will be deleted:"
+          echo "Found old caches to delete. IDs:"
           echo "$cache_ids_to_delete"
 
           # Delete each cache by its ID
           echo "$cache_ids_to_delete" | while read -r cache_id; do
             echo "Deleting cache with ID: ${cache_id}"
-            gh api "repos/${{ github.repository }}/actions/caches/${cache_id}" -X DELETE --silent || echo "Could not delete cache ${cache_id}. It might have already been removed."
+            gh api "repos/${{ github.repository }}/actions/caches/${cache_id}" -X DELETE
             sleep 0.2 # Small delay to avoid hitting API rate limits
           done
 
-          echo "All existing caches should now be deleted."
+          echo "Cache cleanup finished."

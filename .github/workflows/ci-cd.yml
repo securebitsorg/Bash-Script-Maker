@@ -275,14 +275,21 @@ jobs:
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
 
+    - name: Debug Git History
+      run: |
+        echo "--- CURRENT BRANCH ---"
+        git branch --show-current
+        echo "--- LATEST TAGS ---"
+        git tag --list | tail -n 5
+        echo "--- RECENT COMMITS ---"
+        git log --oneline -n 10
+
     - name: Semantic Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
       run: |
         pip install python-semantic-release
-        # This single command handles version bump, git tag, changelog,
-        # GitHub Release creation, and PyPI upload.
-        semantic-release publish
+        semantic-release publish --verbose
 
 # Finish
