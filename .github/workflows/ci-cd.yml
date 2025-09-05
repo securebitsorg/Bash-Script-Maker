@@ -16,6 +16,15 @@ env:
   PYTHON_VERSION: "3.9"
 
 jobs:
+
+  debug-environment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print GitHub Context
+        run: |
+          echo "GitHub Context:"
+          echo "Current Event Name: ${{ github.event_name }}"
+          echo "Current Ref: ${{ github.ref }}"
   # Test-Job für verschiedene Python-Versionen
   test:
     runs-on: ubuntu-latest
