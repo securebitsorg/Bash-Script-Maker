@@ -1,6 +1,35 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.semantic_release]
+# This section defines global behavior
+branch = "main"
+commit_author = "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+commit_message = "chore(release): bump version to {version}"
+tag_format = "v{version}"
+
+[tool.semantic_release.version]
+# This is the crucial part: tells semantic-release to use the VERSION file
+source = "file"
+path = "VERSION"
+
+[tool.semantic_release.commit_parser]
+# Defines which commit types trigger which version bump
+major_on_breaking = true
+minor_tags = ["feat"]
+patch_tags = ["fix", "perf", "build", "chore", "ci", "docs", "style", "refactor", "test"]
+
+[tool.semantic_release.publish]
+# This command builds and uploads the package to PyPI and creates a GitHub Release
+# It replaces the old, separate upload_to_pypi and upload_to_release flags
+dist_glob_patterns = ["dist/*"]
+upload_to_vcs_release = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+
 
 [project]
 name = "bash-script-maker"
