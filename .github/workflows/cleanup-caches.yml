@@ -1,0 +1,40 @@
+name: Cleanup Old Caches
+
+on:
+  schedule:
+    - cron: '0 2 * * SUN' # Run every Sunday at 2 AM UTC
+  workflow_dispatch: {}   # Allow manual trigger
+
+permissions:
+  actions: write
+
+jobs:
+  cleanup-caches:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete caches older than 7 days
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Fetching repository caches..."
+          # The API is limited to 100 results per page, --paginate handles this.
+          # We filter for caches older than 7 days (604800 seconds) and extract their IDs.
+          cache_ids_to_delete=$(gh api --paginate "repos/${{ github.repository }}/actions/caches" | \
+            jq '.actions_caches[] | select((.created_at | fromdate) < (now - 604800)) | .id')
+
+          if [ -z "$cache_ids_to_delete" ]; then
+            echo "No caches older than 7 days found."
+            exit 0
+          fi
+
+          echo "Found old caches to delete. IDs:"
+          echo "$cache_ids_to_delete"
+
+          # Delete each cache by its ID
+          echo "$cache_ids_to_delete" | while read -r cache_id; do
+            echo "Deleting cache with ID: ${cache_id}"
+            gh api "repos/${{ github.repository }}/actions/caches/${cache_id}" -X DELETE
+            sleep 0.2 # Small delay to avoid hitting API rate limits
+          done
+
+          echo "Cache cleanup finished."
