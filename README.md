@@ -64,7 +64,7 @@ Ein benutzerfreundliches GUI-Programm zur Erstellung von Bash-Scripts mit visuel
 - Zenity (für Dialog-Funktionen)
 - Linux-Distribution mit apt, dnf, pacman oder ähnlichem Paketmanager
 
-### Automatische Installation
+### Automatische Installation mit Desktop-Integration
 
 **Empfohlene Methode (automatische Erkennung):**
 ```bash
@@ -72,6 +72,8 @@ git clone https://github.com/securebitsorg/bash-script-maker.git
 cd bash-script-maker
 ./install.sh
 ```
+
+Das Script erkennt automatisch Ihren Paketmanager, installiert alle notwendigen Abhängigkeiten und richtet die Desktop-Integration ein.
 
 **Spezifisch für Distributionen:**
 
@@ -83,6 +85,14 @@ Für Ubuntu/Debian-basierte Systeme:
 Für Fedora/RHEL/CentOS-basierte Systeme:
 ```bash
 ./install_dnf.sh
+```
+
+### Nur Desktop-Integration installieren
+
+Falls Sie die App bereits installiert haben und nur die Desktop-Integration hinzufügen möchten:
+
+```bash
+./install_desktop_integration.sh
 ```
 
 ### Manuelle Installation
@@ -140,9 +150,27 @@ Alle Scripts sind ausführbar und können direkt aufgerufen werden.
 ## Verwendung
 
 ### Programm starten
+
+**Über das Anwendungsmenü:**
+Nach der Installation finden Sie "Bash-Script-Maker" im Anwendungsmenü Ihrer Desktop-Umgebung.
+
+**Über das Terminal:**
 ```bash
-python bash_script_maker.py
+bash-script-maker
 ```
+
+**Direkt aus dem Quellcode:**
+```bash
+python3 bash_script_maker.py
+```
+
+### Desktop-Integration
+
+Die App wird automatisch mit einem benutzerdefinierten Icon und Desktop-Integration installiert:
+- **Icon**: Ein modernes SVG-Icon mit Terminal-Design
+- **Desktop-Datei**: Vollständige Integration in das Anwendungsmenü
+- **Kategorien**: Development und Utility
+- **Unterstützte Distributionen**: Alle Linux-Distributionen mit Desktop-Umgebung
 
 ### Script erstellen
 1. Wählen Sie die gewünschten Befehlsbausteine aus der linken Palette

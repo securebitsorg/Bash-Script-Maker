@@ -52,6 +52,9 @@ Repository = "https://github.com/securebitsorg/bash-script-maker"
 "Bug Reports" = "https://github.com/securebitsorg/bash-script-maker/issues"
 Changelog = "https://github.com/securebitsorg/bash-script-maker/blob/main/CHANGELOG.md"
 
+[project.gui-scripts]
+bash-script-maker = "bash_script_maker:main"
+
 [project.scripts]
 bash-script-maker = "bash_script_maker:main"
 

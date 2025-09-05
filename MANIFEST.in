@@ -6,6 +6,7 @@ include packages.txt
 include *.py
 include *.sh
 include *.desktop
+recursive-include assets *.svg *.png *.ico
 recursive-include docs *.md
 global-exclude *.pyc
 global-exclude __pycache__

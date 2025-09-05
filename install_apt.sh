@@ -154,11 +154,37 @@ else
     print_error "Zenity ist nicht verfügbar."
 fi
 
+# Desktop-Integration installieren
+print_status "Installiere Desktop-Integration..."
+if [ -f "bash-script-maker.desktop" ] && [ -f "assets/bash-script-maker.svg" ]; then
+    # Erstelle Verzeichnisse
+    mkdir -p ~/.local/share/applications
+    mkdir -p ~/.local/share/icons/hicolor/scalable/apps
+    
+    # Kopiere Desktop-Datei und Icon
+    cp bash-script-maker.desktop ~/.local/share/applications/
+    cp assets/bash-script-maker.svg ~/.local/share/icons/hicolor/scalable/apps/
+    
+    # Desktop-Datenbank aktualisieren
+    if command -v update-desktop-database &> /dev/null; then
+        update-desktop-database ~/.local/share/applications
+    fi
+    
+    if command -v gtk-update-icon-cache &> /dev/null; then
+        gtk-update-icon-cache -f -t ~/.local/share/icons/hicolor
+    fi
+    
+    print_success "Desktop-Integration installiert!"
+    print_status "Die App ist jetzt im Anwendungsmenü verfügbar."
+else
+    print_warning "Desktop-Datei oder Icon nicht gefunden. Desktop-Integration übersprungen."
+fi
+
 echo ""
 print_success "=== INSTALLATION ABGESCHLOSSEN ==="
 print_status "Sie können Bash-Script-Maker jetzt starten mit:"
-print_status "  cd /pfad/zu/bash-script-maker"
-print_status "  ./start.sh"
+print_status "  bash-script-maker"
+print_status "  (über das Anwendungsmenü oder Terminal)"
 echo ""
 print_status "Oder direkt mit:"
 print_status "  python3 bash_script_maker.py"
