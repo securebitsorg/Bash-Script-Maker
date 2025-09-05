@@ -292,6 +292,8 @@ jobs:
     - name: Semantic Release
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+          TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
           LOG_LEVEL: DEBUG
       run: |
