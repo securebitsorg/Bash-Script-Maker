@@ -127,8 +127,8 @@ cp assets.py build/flatpak/
 print_status "Erstelle Flatpak-Paket..."
 cd build/flatpak
 
-# Verwende das einfache Manifest
-if flatpak-builder --repo=repo --force-clean build org.securebits.bashscriptmaker.yml; then
+# Verwende das einfache Manifest mit systemweiter Flatpak-Installation
+if sudo flatpak-builder --repo=repo --force-clean build org.securebits.bashscriptmaker.yml; then
     print_success "Flatpak-Paket erfolgreich erstellt!"
     
     # Erstelle Bundle
@@ -145,7 +145,7 @@ else
     print_status "Versuche mit dem einfachen Manifest..."
     
     # Fallback auf das einfache Manifest
-    if flatpak-builder --repo=repo --force-clean build org.securebits.bashscriptmaker.yml; then
+    if sudo flatpak-builder --repo=repo --force-clean build org.securebits.bashscriptmaker.yml; then
         print_success "Flatpak-Paket mit einfachem Manifest erfolgreich erstellt!"
         
         if flatpak build-bundle repo bash-script-maker.flatpak org.securebits.bashscriptmaker; then
