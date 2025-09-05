@@ -59,7 +59,7 @@ bash-script-maker = "bash_script_maker:main"
 bash-script-maker = "bash_script_maker:main"
 
 [tool.setuptools]
-py-modules = ["bash_script_maker", "syntax_highlighter"]
+py-modules = ["bash_script_maker", "syntax_highlighter", "localization", "custom_dialogs", "assets"]
 include-package-data = true
 zip-safe = false
 
