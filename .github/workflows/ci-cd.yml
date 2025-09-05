@@ -278,55 +278,11 @@ jobs:
     - name: Semantic Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
       run: |
         pip install python-semantic-release
+        # This single command handles version bump, git tag, changelog,
+        # GitHub Release creation, and PyPI upload.
         semantic-release publish
-        
-    - name: Download build artifacts for release (Fallback)
-      if: success()
-      uses: actions/download-artifact@v4
-      with:
-        name: python-package
-        path: dist/
-
-    - name: Install Twine for PyPI upload
-      if: success() && env.HAS_PYPI_TOKEN == 'true'
-      run: |
-        python -m pip install --upgrade pip
-        pip install twine
-
-    - name: Publish to PyPI
-      if: success() && env.HAS_PYPI_TOKEN == 'true'
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
-      run: |
-        python -m twine upload --repository-url https://upload.pypi.org/legacy/ --skip-existing dist/*
-
-    - name: Create GitHub Release (Fallback)
-      if: success()
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        # Prüfe ob ein neuer Tag erstellt wurde
-        LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-        if [ -n "$LATEST_TAG" ] && [ "$LATEST_TAG" != "v1.1.0" ]; then
-          echo "Creating GitHub Release for $LATEST_TAG"
-          # Falls es Artefakte gibt, anhängen; ansonsten nur Release erstellen
-          if compgen -G "dist/*" > /dev/null; then
-            gh release create "$LATEST_TAG" \
-              --title "$LATEST_TAG" \
-              --notes "Automatisches Release erstellt durch semantic-release" \
-              --generate-notes \
-              dist/* || echo "Release creation failed or already exists"
-          else
-            gh release create "$LATEST_TAG" \
-              --title "$LATEST_TAG" \
-              --notes "Automatisches Release erstellt durch semantic-release" \
-              --generate-notes || echo "Release creation failed or already exists"
-          fi
-        else
-          echo "No new tag found, skipping GitHub Release creation"
-        fi
 
 # Finish
