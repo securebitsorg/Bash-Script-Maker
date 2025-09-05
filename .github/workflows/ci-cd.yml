@@ -81,6 +81,7 @@ jobs:
       actions: write
     steps:
       - name: Delete Actions cache for this ref
+        continue-on-error: true
         run: |
           curl -fsSL -X DELETE \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
