@@ -72,6 +72,19 @@ jobs:
       with:
         file: ./coverage.xml
         fail_ci_if_error: false
+    
+  # Purge-Cache-Job
+  purge-caches:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Delete Actions cache for this ref
+        run: |
+          curl -fsSL -X DELETE \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/caches?ref=${{ github.ref }}"
 
   # Build-Job für Package-Erstellung
   build:
@@ -139,13 +152,6 @@ jobs:
       run: |
         python -m twine upload dist/*
 
-    - name: Publish to GitHub Packages
-      if: github.repository_owner == 'securebitsorg'  
-      env:
-        TWINE_USERNAME: ${{ github.actor }}
-        TWINE_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        python -m twine upload --repository-url https://upload.pypi.org/legacy/ dist/*
 
   # Documentation-Job
   docs:
@@ -264,7 +270,7 @@ jobs:
       packages: write
       actions: write
     env:
-      testpypi: ${{ secrets.PYPI_API_TOKEN }}
+      HAS_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN != '' }}
 
     steps:
     - uses: actions/checkout@v4
@@ -346,19 +352,19 @@ jobs:
         name: python-package
         path: dist/
 
-    - name: Install Twine for TestPyPI upload
-      if: success() && env.pypi != ''
+    - name: Install Twine for PyPI upload
+      if: success() && env.HAS_PYPI_TOKEN == 'true'
       run: |
         python -m pip install --upgrade pip
         pip install twine
 
-    - name: Publish to TestPyPI
-      if: success() && env.pypi != ''
+    - name: Publish to PyPI
+      if: success() && env.HAS_PYPI_TOKEN == 'true'
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
       run: |
-        python -m twine upload --repository-url https://pypi.org/legacy/ dist/*
+        python -m twine upload --repository-url https://upload.pypi.org/legacy/ dist/*
 
     - name: Create GitHub Release (Fallback)
       if: success()
