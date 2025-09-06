@@ -24,6 +24,10 @@ jobs:
           sudo apt-get install -y flatpak flatpak-builder
           flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
+      - name: Install Python dependencies
+        run: |
+          pip3 install --user ttkbootstrap pygments
+
       - name: Cache Flatpak builder dependencies
         uses: actions/cache@v4
         with:
@@ -35,7 +39,7 @@ jobs:
       - name: Build Flatpak
         run: |
           cd build/flatpak
-          flatpak-builder --user --install-deps-from=flathub --force-clean --share=network --share=ipc build-dir org.securebits.bashscriptmaker.yml
+          flatpak-builder --user --install-deps-from=flathub --force-clean --share=network --share=ipc --share=session-bus build-dir org.securebits.bashscriptmaker.yml
 
       - name: Create Flatpak Bundle
         run: |

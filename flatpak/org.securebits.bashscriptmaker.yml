@@ -16,8 +16,9 @@ modules:
   - name: bash-script-maker
     buildsystem: simple
     build-commands:
-      - pip3 install --prefix=/app ttkbootstrap pygments
-      - pip3 install --prefix=/app --no-deps .
+      - mkdir -p /app/bin
+      - cp bash_script_maker_flatpak.py /app/bin/bash-script-maker
+      - chmod +x /app/bin/bash-script-maker
     sources:
       - type: dir
         path: ../
