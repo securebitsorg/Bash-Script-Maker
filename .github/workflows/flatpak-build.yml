@@ -70,7 +70,7 @@ jobs:
       - name: Build Flatpak
         run: |
           cd build/flatpak
-          flatpak-builder --user --install-deps-from=flathub --force-clean --share=network --share=ipc --share=session-bus build-dir org.securebits.bashscriptmaker.yml
+          flatpak-builder --user --install-deps-from=flathub --force-clean --repo=repo build-dir org.securebits.bashscriptmaker.yml
 
       - name: Create Flatpak Bundle
         run: |
