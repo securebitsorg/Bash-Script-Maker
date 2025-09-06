@@ -24,10 +24,6 @@ jobs:
           sudo apt-get install -y flatpak flatpak-builder
           flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
-      - name: Install Python dependencies
-        run: |
-          pip3 install --user ttkbootstrap pygments
-
       - name: Cache Flatpak builder dependencies
         uses: actions/cache@v4
         with:
@@ -35,6 +31,13 @@ jobs:
           key: ${{ runner.os }}-flatpak-builder-${{ hashFiles('build/flatpak/**.yml') }}
           restore-keys: |
             ${{ runner.os }}-flatpak-builder-
+
+      - name: Create build directory and copy files
+        run: |
+          mkdir -p build/flatpak
+          cp flatpak/org.securebits.bashscriptmaker.yml build/flatpak/
+          cp flatpak/org.securebits.bashscriptmaker.appdata.xml build/flatpak/
+          cp bash_script_maker_flatpak.py build/flatpak/
 
       - name: Build Flatpak
         run: |
