@@ -1,9 +1,14 @@
 name: Build Flatpak
 
-# Trigger only when a new release is published
 on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main ]
   release:
     types: [published]
+  workflow_dispatch:
 
 jobs:
   build-flatpak:
