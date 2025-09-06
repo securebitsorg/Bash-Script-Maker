@@ -24,20 +24,43 @@ jobs:
           sudo apt-get install -y flatpak flatpak-builder
           flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
-      - name: Cache Flatpak builder dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/flatpak-builder
-          key: ${{ runner.os }}-flatpak-builder-${{ hashFiles('build/flatpak/**.yml') }}
-          restore-keys: |
-            ${{ runner.os }}-flatpak-builder-
+      - name: Clear Flatpak cache
+        run: |
+          rm -rf ~/.cache/flatpak-builder || true
 
-      - name: Create build directory and copy files
+      - name: Create build directory and files
         run: |
           mkdir -p build/flatpak
-          cp flatpak/org.securebits.bashscriptmaker.yml build/flatpak/
-          cp flatpak/org.securebits.bashscriptmaker.appdata.xml build/flatpak/
           cp bash_script_maker_flatpak.py build/flatpak/
+          cp flatpak/org.securebits.bashscriptmaker.appdata.xml build/flatpak/
+          
+          # Create the correct manifest
+          cat > build/flatpak/org.securebits.bashscriptmaker.yml << 'EOF'
+          app-id: org.securebits.bashscriptmaker
+          runtime: org.freedesktop.Platform
+          runtime-version: '23.08'
+          sdk: org.freedesktop.Sdk
+          command: bash-script-maker
+          finish-args:
+            - --share=ipc
+            - --socket=wayland
+            - --socket=x11
+            - --socket=pulseaudio
+            - --device=dri
+            - --filesystem=home
+            - --filesystem=host
+            - --talk-name=org.freedesktop.Notifications
+          modules:
+            - name: bash-script-maker
+              buildsystem: simple
+              build-commands:
+                - mkdir -p /app/bin
+                - cp bash_script_maker_flatpak.py /app/bin/bash-script-maker
+                - chmod +x /app/bin/bash-script-maker
+              sources:
+                - type: dir
+                  path: .
+          EOF
 
       - name: Build Flatpak
         run: |
