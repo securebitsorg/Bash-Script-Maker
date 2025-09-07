@@ -50,7 +50,6 @@ setup(
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
     url="https://github.com/securebitsorg/bash-script-maker",
-    license="MIT",
     packages=[],
     py_modules=["bash_script_maker", "syntax_highlighter", "localization", "custom_dialogs", "assets"],
     include_package_data=True,
