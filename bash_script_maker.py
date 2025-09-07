@@ -7,7 +7,7 @@ Bash-Script-Maker - Ein GUI-Programm zur Erstellung von Bash-Scripts
 try:
     from __version__ import __version__
 except ImportError:
-    __version__ = "1.1.0"
+    __version__ = "1.2.1"
 
 import tkinter as tk
 from tkinter import scrolledtext, messagebox

@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="bash-script-maker",
-    version="1.1.0",
+    version="1.2.1",
     py_modules=["bash_script_maker", "syntax_highlighter", "localization", "custom_dialogs", "assets"],
     entry_points={
         "console_scripts": [
