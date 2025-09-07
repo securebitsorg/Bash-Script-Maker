@@ -236,6 +236,9 @@ class BashScriptMaker:
         self.root = root
         self.root.title("Bash-Script-Maker")
         self.root.geometry("1200x800")
+        
+        # Icon setzen
+        self.set_window_icon()
 
         # Variablen für den letzten Pfad
         self.last_path = os.path.expanduser("~")
@@ -256,6 +259,66 @@ class BashScriptMaker:
             + datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             + "\n\n"
         )
+
+    def set_window_icon(self):
+        """Setzt das Fenster-Icon für Titelleiste und Taskleiste"""
+        try:
+            # Pfad zum Icon ermitteln
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            
+            # Icon-Größen die wir haben
+            icon_sizes = [16, 32, 48, 64, 128]
+            icon_files = []
+            
+            # Verfügbare Icon-Dateien sammeln
+            for size in icon_sizes:
+                icon_path = os.path.join(script_dir, "assets", f"bash-script-maker-{size}.png")
+                if os.path.exists(icon_path):
+                    icon_files.append(icon_path)
+            
+            # Fallback auf 16px Icon
+            if not icon_files:
+                fallback_path = os.path.join(script_dir, "assets", "bash-script-maker-16.png")
+                if os.path.exists(fallback_path):
+                    icon_files.append(fallback_path)
+            
+            if icon_files:
+                # PNG-Icons verwenden
+                try:
+                    from PIL import Image, ImageTk
+                    # Alle verfügbaren Icon-Größen laden
+                    icons = []
+                    
+                    for icon_path in icon_files:
+                        img = Image.open(icon_path)
+                        photo = ImageTk.PhotoImage(img)
+                        icons.append(photo)
+                    
+                    # Haupticon setzen (alle Größen)
+                    self.root.iconphoto(True, *icons)
+                    print(f"Icons gesetzt: {len(icons)} Größen")
+                    
+                except ImportError:
+                    # Fallback ohne PIL - verwende größtes verfügbares Icon
+                    try:
+                        # Größtes Icon zuerst versuchen
+                        best_icon = icon_files[-1]  # Letztes in der Liste (größtes)
+                        icon = tk.PhotoImage(file=best_icon)
+                        self.root.iconphoto(True, icon)
+                        print(f"Icon gesetzt (ohne PIL): {best_icon}")
+                    except tk.TclError as e:
+                        print(f"Fehler beim Laden des PNG-Icons: {e}")
+                        
+            else:
+                # Kein PNG gefunden, prüfe SVG
+                svg_icon_path = os.path.join(script_dir, "assets", "bash-script-maker.svg")
+                if os.path.exists(svg_icon_path):
+                    print(f"SVG-Icon gefunden, aber PNG wird für Tkinter bevorzugt: {svg_icon_path}")
+                else:
+                    print("Keine Icon-Datei gefunden in assets/")
+                
+        except Exception as e:
+            print(f"Fehler beim Setzen des Icons: {e}")
 
     def create_menu(self):
         """Erstellt das Menü der Anwendung"""
