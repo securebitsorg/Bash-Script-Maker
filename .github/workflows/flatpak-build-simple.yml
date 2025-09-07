@@ -3,6 +3,10 @@ name: Build Flatpak Package (Simple) - DISABLED
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read         # Needed to checkout code
+  actions: read         # Needed to read workflow artifacts
+
 jobs:
   build-flatpak:
     runs-on: ubuntu-latest

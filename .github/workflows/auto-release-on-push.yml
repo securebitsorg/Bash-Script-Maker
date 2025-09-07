@@ -8,6 +8,12 @@ on:
       - 'docs/**'
       - '*.md'
 
+permissions:
+  contents: write        # Needed to create releases and push tags
+  actions: read         # Needed to read workflow artifacts
+  packages: write       # Needed for package publishing
+  id-token: write       # Needed for PyPI trusted publishing (optional)
+
 jobs:
   check-for-release:
     name: Check for Release Triggers
