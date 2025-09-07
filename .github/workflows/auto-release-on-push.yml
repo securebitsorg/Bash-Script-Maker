@@ -39,7 +39,7 @@ jobs:
           CURRENT_VERSION=$(cat VERSION 2>/dev/null || echo "0.0.0")
           echo "Current version: $CURRENT_VERSION"
           
-         # Letzten Git-Tag abrufen
+          # Letzten Git-Tag abrufen
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
           LAST_TAG_VERSION=${LAST_TAG#v}
           echo "Last tag version: $LAST_TAG_VERSION"
