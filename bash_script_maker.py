@@ -267,7 +267,7 @@ class BashScriptMaker:
             script_dir = os.path.dirname(os.path.abspath(__file__))
 
             # Icon-Größen die wir haben
-            icon_sizes = [16, 32, 48, 64, 128]
+            icon_sizes = [16, 32, 48, 64, 128, 256]
             icon_files = []
 
             # Verfügbare Icon-Dateien sammeln
