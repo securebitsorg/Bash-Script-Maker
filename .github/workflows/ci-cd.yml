@@ -118,6 +118,11 @@ jobs:
       contents: write
       pull-requests: write
       issues: write
+      actions: write
+      checks: write
+      deployments: write
+      pages: write
+      statuses: write
 
     steps:
     - uses: actions/checkout@v4
