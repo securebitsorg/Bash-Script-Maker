@@ -43,6 +43,7 @@ jobs:
           mkdir -p build/flatpak
           cp bash_script_maker_flatpak.py build/flatpak/
           cp flatpak/org.securebits.bashscriptmaker.appdata.xml build/flatpak/
+          cp -r assets build/flatpak/
           
           # Create the correct manifest
           cat > build/flatpak/org.securebits.bashscriptmaker.yml << 'EOF'
@@ -64,9 +65,38 @@ jobs:
             - name: bash-script-maker
               buildsystem: simple
               build-commands:
+                # Create directories
                 - mkdir -p /app/bin
+                - mkdir -p /app/share/applications
+                - mkdir -p /app/share/icons/hicolor/scalable/apps
+                - mkdir -p /app/share/metainfo
+                
+                # Install main application
                 - cp bash_script_maker_flatpak.py /app/bin/bash-script-maker
                 - chmod +x /app/bin/bash-script-maker
+                
+                # Install desktop file with correct name
+                - |
+                  cat > /app/share/applications/org.securebits.bashscriptmaker.desktop << 'DESKTOP_EOF'
+                  [Desktop Entry]
+                  Name=Bash Script Maker
+                  Comment=Ein GUI-Programm zur Erstellung von Bash-Scripts
+                  Exec=bash-script-maker
+                  Icon=org.securebits.bashscriptmaker
+                  Terminal=false
+                  Type=Application
+                  Categories=Development;Utility;TextEditor;
+                  Keywords=bash;script;editor;generator;development;
+                  StartupWMClass=Bash-Script-Maker
+                  MimeType=text/x-shellscript;application/x-shellscript;
+                  DESKTOP_EOF
+                
+                # Install icon
+                - cp assets/bash-script-maker.svg /app/share/icons/hicolor/scalable/apps/org.securebits.bashscriptmaker.svg
+                
+                # Install AppData
+                - cp org.securebits.bashscriptmaker.appdata.xml /app/share/metainfo/
+                
               sources:
                 - type: dir
                   path: .

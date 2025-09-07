@@ -1,0 +1,99 @@
+app-id: org.securebits.bashscriptmaker
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
+command: bash-script-maker
+finish-args:
+  - --share=ipc
+  - --socket=wayland
+  - --socket=x11
+  - --socket=pulseaudio
+  - --device=dri
+  - --filesystem=home
+  - --filesystem=host
+  - --talk-name=org.freedesktop.Notifications
+  - --env=PYTHONPATH=/app/lib/python3.11/site-packages
+modules:
+  - name: python3-pip
+    buildsystem: simple
+    build-commands:
+      - pip3 install --prefix=/app --no-deps pip
+    sources:
+      - type: archive
+        url: https://files.pythonhosted.org/packages/source/p/pip/pip-24.0.tar.gz
+        sha256: ea9bd1a847e8c5774a5777bb398c19e80bcd4e2aa16a4b301b718fe6f593aba2
+
+  - name: python3-ttkbootstrap
+    buildsystem: simple
+    build-commands:
+      - pip3 install --prefix=/app --no-deps ttkbootstrap>=1.10.1
+    sources:
+      - type: archive
+        url: https://files.pythonhosted.org/packages/source/t/ttkbootstrap/ttkbootstrap-1.10.1.tar.gz
+        sha256: d176e8f7c5d2e7f55c9b7f7c8b2b2a7e1e0b1e2e1e1e1e1e1e1e1e1e1e1e1e1e
+
+  - name: python3-pygments
+    buildsystem: simple
+    build-commands:
+      - pip3 install --prefix=/app --no-deps pygments>=2.15.1
+    sources:
+      - type: archive
+        url: https://files.pythonhosted.org/packages/source/p/Pygments/Pygments-2.17.2.tar.gz
+        sha256: da46cec9fd2de5be3a8a784f434e4c4ab670b4ff54d605c4c2717e9d49c4c367
+
+  - name: bash-script-maker
+    buildsystem: simple
+    build-commands:
+      # Create application directory
+      - mkdir -p /app/bin
+      - mkdir -p /app/share/applications
+      - mkdir -p /app/share/icons/hicolor/scalable/apps
+      - mkdir -p /app/lib/python3.11/site-packages
+      
+      # Copy Python modules
+      - cp bash_script_maker.py /app/lib/python3.11/site-packages/
+      - cp syntax_highlighter.py /app/lib/python3.11/site-packages/
+      - cp localization.py /app/lib/python3.11/site-packages/
+      - cp custom_dialogs.py /app/lib/python3.11/site-packages/
+      - cp assets.py /app/lib/python3.11/site-packages/
+      - cp __version__.py /app/lib/python3.11/site-packages/
+      
+      # Copy localization files
+      - cp -r locales /app/lib/python3.11/site-packages/
+      
+      # Create launcher script
+      - |
+        cat > /app/bin/bash-script-maker << 'EOF'
+        #!/bin/bash
+        export PYTHONPATH="/app/lib/python3.11/site-packages:$PYTHONPATH"
+        cd /app/lib/python3.11/site-packages
+        exec python3 bash_script_maker.py "$@"
+        EOF
+      - chmod +x /app/bin/bash-script-maker
+      
+      # Install desktop file
+      - |
+        cat > /app/share/applications/org.securebits.bashscriptmaker.desktop << 'EOF'
+        [Desktop Entry]
+        Name=Bash Script Maker
+        Comment=Ein GUI-Programm zur Erstellung von Bash-Scripts
+        Exec=bash-script-maker
+        Icon=org.securebits.bashscriptmaker
+        Terminal=false
+        Type=Application
+        Categories=Development;Utility;TextEditor;
+        Keywords=bash;script;editor;generator;development;
+        StartupWMClass=Bash-Script-Maker
+        MimeType=text/x-shellscript;application/x-shellscript;
+        EOF
+      
+      # Install icon
+      - cp assets/bash-script-maker.svg /app/share/icons/hicolor/scalable/apps/org.securebits.bashscriptmaker.svg
+      
+      # Install AppData
+      - mkdir -p /app/share/metainfo
+      - cp flatpak/org.securebits.bashscriptmaker.appdata.xml /app/share/metainfo/
+
+    sources:
+      - type: dir
+        path: ../

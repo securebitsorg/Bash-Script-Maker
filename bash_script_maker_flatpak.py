@@ -15,8 +15,11 @@ import threading
 class BashScriptMaker:
     def __init__(self, root):
         self.root = root
-        self.root.title("Bash-Script-Maker")
+        self.root.title("Bash Script Maker")  # Korrigierter Titel
         self.root.geometry("1000x700")
+        
+        # Set window class for proper desktop integration
+        self.root.wm_class("Bash-Script-Maker", "Bash-Script-Maker")
         
         # Variables
         self.current_file = None
@@ -74,16 +77,76 @@ class BashScriptMaker:
         self.text_editor = scrolledtext.ScrolledText(
             right_frame, 
             wrap=tk.NONE, 
-            font=("Consolas", 11),
-            bg="#2d3748",
-            fg="#e2e8f0",
-            insertbackground="#ffffff"
+            font=("Monaco", 11) if sys.platform == "darwin" else ("Consolas", 11),
+            bg="#1e1e1e",
+            fg="#d4d4d4",
+            insertbackground="#ffffff",
+            selectbackground="#264f78",
+            relief=tk.FLAT,
+            borderwidth=1
         )
         self.text_editor.pack(fill=tk.BOTH, expand=True)
         
+        # Add basic syntax highlighting
+        self.setup_syntax_highlighting()
+        
         # Status bar
-        self.status_bar = ttk.Label(self.root, text="Bereit", relief=tk.SUNKEN)
-        self.status_bar.pack(side=tk.BOTTOM, fill=tk.X)
+        self.status_bar = ttk.Label(self.root, text="Bereit | Flatpak-Version", relief=tk.SUNKEN, anchor=tk.W)
+        self.status_bar.pack(side=tk.BOTTOM, fill=tk.X, padx=10, pady=(0, 10))
+    
+    def setup_syntax_highlighting(self):
+        """Setup basic syntax highlighting for bash scripts"""
+        # Define colors for syntax highlighting
+        self.text_editor.tag_config("comment", foreground="#6a9955", font=("Consolas", 11, "italic"))
+        self.text_editor.tag_config("keyword", foreground="#569cd6", font=("Consolas", 11, "bold"))
+        self.text_editor.tag_config("string", foreground="#ce9178")
+        self.text_editor.tag_config("variable", foreground="#9cdcfe")
+        self.text_editor.tag_config("operator", foreground="#d4d4d4")
+        
+        # Bind text change event for live highlighting
+        self.text_editor.bind("<KeyRelease>", self.on_text_change)
+    
+    def on_text_change(self, event=None):
+        """Apply basic syntax highlighting on text change"""
+        import re
+        content = self.text_editor.get("1.0", tk.END)
+        
+        # Clear existing tags
+        for tag in ["comment", "keyword", "string", "variable"]:
+            self.text_editor.tag_delete(tag)
+        
+        # Highlight comments
+        for match in re.finditer(r'#.*', content):
+            start_line = content[:match.start()].count('\n') + 1
+            start_col = match.start() - content.rfind('\n', 0, match.start()) - 1
+            end_line = content[:match.end()].count('\n') + 1
+            end_col = match.end() - content.rfind('\n', 0, match.end()) - 1
+            self.text_editor.tag_add("comment", f"{start_line}.{start_col}", f"{end_line}.{end_col}")
+        
+        # Highlight bash keywords
+        keywords = r'\b(if|then|else|elif|fi|for|while|do|done|case|esac|function|return|exit|break|continue|echo|read|export|local)\b'
+        for match in re.finditer(keywords, content):
+            start_line = content[:match.start()].count('\n') + 1
+            start_col = match.start() - content.rfind('\n', 0, match.start()) - 1
+            end_line = content[:match.end()].count('\n') + 1
+            end_col = match.end() - content.rfind('\n', 0, match.end()) - 1
+            self.text_editor.tag_add("keyword", f"{start_line}.{start_col}", f"{end_line}.{end_col}")
+        
+        # Highlight strings
+        for match in re.finditer(r'"[^"]*"', content):
+            start_line = content[:match.start()].count('\n') + 1
+            start_col = match.start() - content.rfind('\n', 0, match.start()) - 1
+            end_line = content[:match.end()].count('\n') + 1
+            end_col = match.end() - content.rfind('\n', 0, match.end()) - 1
+            self.text_editor.tag_add("string", f"{start_line}.{start_col}", f"{end_line}.{end_col}")
+        
+        # Highlight variables
+        for match in re.finditer(r'\$\w+|\$\{[^}]+\}', content):
+            start_line = content[:match.start()].count('\n') + 1
+            start_col = match.start() - content.rfind('\n', 0, match.start()) - 1
+            end_line = content[:match.end()].count('\n') + 1
+            end_col = match.end() - content.rfind('\n', 0, match.end()) - 1
+            self.text_editor.tag_add("variable", f"{start_line}.{start_col}", f"{end_line}.{end_col}")
         
     def insert_shebang(self):
         self.text_editor.insert(tk.INSERT, "#!/bin/bash\n")
