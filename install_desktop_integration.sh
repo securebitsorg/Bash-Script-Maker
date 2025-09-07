@@ -64,14 +64,27 @@ else
     exit 1
 fi
 
-# Kopiere Icon
-print_status "Installiere Icon..."
+# Kopiere Icons
+print_status "Installiere Icons..."
+
+# SVG Icon
 if cp assets/bash-script-maker.svg ~/.local/share/icons/hicolor/scalable/apps/; then
-    print_success "Icon installiert: ~/.local/share/icons/hicolor/scalable/apps/bash-script-maker.svg"
+    print_success "SVG-Icon installiert: ~/.local/share/icons/hicolor/scalable/apps/bash-script-maker.svg"
 else
-    print_error "Fehler beim Kopieren des Icons!"
+    print_error "Fehler beim Kopieren des SVG-Icons!"
     exit 1
 fi
+
+# PNG Icons in verschiedenen Größen
+mkdir -p ~/.local/share/icons/hicolor/48x48/apps
+mkdir -p ~/.local/share/icons/hicolor/64x64/apps
+mkdir -p ~/.local/share/icons/hicolor/128x128/apps
+
+cp assets/bash-script-maker-48.png ~/.local/share/icons/hicolor/48x48/apps/bash-script-maker.png
+cp assets/bash-script-maker-64.png ~/.local/share/icons/hicolor/64x64/apps/bash-script-maker.png
+cp assets/bash-script-maker-128.png ~/.local/share/icons/hicolor/128x128/apps/bash-script-maker.png
+
+print_success "PNG-Icons installiert in verschiedenen Größen"
 
 # Desktop-Datenbank aktualisieren
 print_status "Aktualisiere Desktop-Datenbank..."

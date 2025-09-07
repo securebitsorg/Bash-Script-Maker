@@ -329,6 +329,50 @@ class BashScriptMaker:
         except Exception as e:
             print(f"Fehler beim Setzen des Icons: {e}")
 
+    def add_logo_to_toolbar(self, toolbar):
+        """Fügt das Logo zur Toolbar hinzu"""
+        try:
+            # Pfad zum Icon ermitteln
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            logo_path = os.path.join(script_dir, "assets", "bash-script-maker-32.png")
+            
+            if os.path.exists(logo_path):
+                try:
+                    from PIL import Image, ImageTk
+                    
+                    # Logo laden und für Toolbar optimieren
+                    img = Image.open(logo_path)
+                    # Etwas kleiner für die Toolbar (24x24)
+                    img = img.resize((24, 24), Image.Resampling.LANCZOS)
+                    logo_photo = ImageTk.PhotoImage(img)
+                    
+                    # Logo-Label erstellen
+                    logo_label = ttk.Label(toolbar, image=logo_photo)
+                    logo_label.image = logo_photo  # Referenz behalten
+                    logo_label.pack(side=tk.LEFT, padx=(0, 10), pady=20)
+                    
+                    # Tooltip hinzufügen
+                    ToolTip(logo_label, text="Bash-Script-Maker v" + __version__)
+                    
+                    print("Logo zur Toolbar hinzugefügt")
+                    
+                except ImportError:
+                    # Fallback ohne PIL - verwende Text-Logo
+                    logo_label = ttk.Label(
+                        toolbar, 
+                        text="🖥️", 
+                        font=("Arial", 16)
+                    )
+                    logo_label.pack(side=tk.LEFT, padx=(0, 10), pady=20)
+                    ToolTip(logo_label, text="Bash-Script-Maker v" + __version__)
+                    print("Text-Logo zur Toolbar hinzugefügt")
+                    
+            else:
+                print(f"Logo-Datei nicht gefunden: {logo_path}")
+                
+        except Exception as e:
+            print(f"Fehler beim Hinzufügen des Logos: {e}")
+
     def create_menu(self):
         """Erstellt das Menü der Anwendung"""
         menubar = tk.Menu(self.root)
@@ -452,6 +496,9 @@ class BashScriptMaker:
         # Toolbar ganz oben platzieren
         toolbar = ttk.Frame(self.root)
         toolbar.pack(side=tk.TOP, fill=tk.X, padx=5, pady=(5, 0))
+
+        # Logo hinzufügen (links)
+        self.add_logo_to_toolbar(toolbar)
 
         # Toolbar-Inhalte - LINKS
         btn_new = ttk.Button(
