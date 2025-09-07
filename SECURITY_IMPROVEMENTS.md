@@ -49,14 +49,6 @@ permissions:
 
 ### Build-Workflows (Minimale Berechtigungen)
 
-#### `flatpak-build.yml`
-```yaml
-permissions:
-  contents: read         # Needed to checkout code
-  actions: read         # Needed to read workflow artifacts
-```
-
-#### `flatpak-build-simple.yml` (Deaktiviert)
 ```yaml
 permissions:
   contents: read         # Needed to checkout code

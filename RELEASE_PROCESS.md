@@ -12,7 +12,7 @@ Der Release-Prozess wird durch GitHub Actions automatisiert und wird ausgelöst,
 
 1. **Tag erstellen** → Automatischer Release wird gestartet
 2. **GitHub Release** → Release-Seite wird erstellt
-3. **Build-Artefakte** → Python-Pakete und Flatpak werden gebaut
+3. **Build-Artefakte** → Python-Pakete werden gebaut
 4. **Upload** → Alle Dateien werden zum Release hinzugefügt
 5. **PyPI** → Automatische Veröffentlichung auf PyPI (optional)
 6. **CHANGELOG** → Automatische Aktualisierung
@@ -84,8 +84,6 @@ Jeder Release enthält automatisch:
 - `bash-script-maker-X.Y.Z-py3-none-any.whl` (Wheel)
 - `bash-script-maker-X.Y.Z.tar.gz` (Source Distribution)
 
-### 2. Flatpak-Paket
-- `BashScriptMaker-X.Y.Z.flatpak` (Flatpak Bundle)
 
 ### 3. Source-Code
 - `bash-script-maker-X.Y.Z-source.tar.gz` (Vollständiger Quellcode)
@@ -184,7 +182,6 @@ git push origin v1.2.3
 ## Workflow-Dateien
 
 - `.github/workflows/auto-release.yml` - Hauptworkflow
-- `.github/workflows/flatpak-build.yml` - Flatpak-spezifischer Build
 - `create_release.sh` - Helper-Script für Releases
 
 ## Monitoring

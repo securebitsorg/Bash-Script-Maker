@@ -53,7 +53,7 @@ git commit -m "Große Änderungen [major]"
 3. **Dateien aktualisieren** → VERSION, pyproject.toml, __version__.py
 4. **Tag erstellen** → Git-Tag wird automatisch erstellt
 5. **Release erstellen** → GitHub Release mit Artefakten
-6. **Build-Prozess** → Python-Pakete und Flatpak werden gebaut
+6. **Build-Prozess** → Python-Pakete werden gebaut
 7. **PyPI-Upload** → Automatische Veröffentlichung auf https://pypi.org/project/bash-script-maker/
 
 ## 📋 Beispiele für die Praxis
@@ -160,10 +160,6 @@ https://github.com/securebitsorg/bash-script-maker/actions
 - Überprüfen Sie das `PYPI_API_TOKEN` Secret
 - Version könnte bereits auf PyPI existieren
 
-#### Problem: Flatpak-Build fehlschlägt
-**Lösung:**
-- Überprüfen Sie `bash_script_maker_flatpak.py`
-- Prüfen Sie die Flatpak-Manifest-Syntax
 
 ## 🔧 Erweiterte Konfiguration
 
@@ -205,7 +201,7 @@ Mit diesen Workflows können Sie:
 - ✅ **Automatische Releases** bei jedem Push
 - ✅ **Semantic Versioning** basierend auf Commits
 - ✅ **Professionelle Release-Notes**
-- ✅ **Multi-Format Builds** (Python, Flatpak)
+- ✅ **Multi-Format Builds** (Python)
 - ✅ **PyPI-Integration**
 - ✅ **Null manueller Aufwand**
 

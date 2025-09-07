@@ -64,33 +64,6 @@ Ein benutzerfreundliches GUI-Programm zur Erstellung von Bash-Scripts mit visuel
 - Zenity (für Dialog-Funktionen)
 - Linux-Distribution mit apt, dnf, pacman oder ähnlichem Paketmanager
 
-### Flatpak-Installation (Empfohlen)
-
-**Flatpak ist die modernste und sicherste Installationsmethode:**
-
-```bash
-# Flatpak installieren (falls noch nicht vorhanden)
-sudo dnf install flatpak  # Fedora/RHEL
-sudo apt install flatpak  # Ubuntu/Debian
-sudo pacman -S flatpak    # Arch Linux
-
-# Flathub-Repository hinzufügen
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-
-# App installieren (wenn verfügbar)
-flatpak install flathub org.securebits.bashscriptmaker
-
-# App starten
-flatpak run org.securebits.bashscriptmaker
-```
-
-**Vorteile von Flatpak:**
-- ✅ Vollständig sandboxed und sicher
-- ✅ Automatische Updates
-- ✅ Keine System-Abhängigkeiten
-- ✅ Funktioniert auf allen Linux-Distributionen
-- ✅ Desktop-Integration inklusive
-
 ### Automatische Installation mit Desktop-Integration
 
 **Empfohlene Methode (automatische Erkennung):**
@@ -114,15 +87,6 @@ Für Fedora/RHEL/CentOS-basierte Systeme:
 ./install_dnf.sh
 ```
 
-### Flatpak-Paket selbst erstellen
-
-```bash
-# Flatpak-Paket lokal erstellen
-./build_flatpak.sh
-
-# Erstelltes Paket installieren
-flatpak install build/flatpak/bash-script-maker.flatpak
-```
 
 ### Nur Desktop-Integration installieren
 

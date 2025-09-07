@@ -101,12 +101,6 @@ if [[ $USER_ONLY -eq 0 ]] && need_sudo; then
   sudo rm -f "$ICON_SYS1" "$ICON_SYS2" 2>/dev/null || true
 fi
 
-if command -v flatpak >/dev/null 2>&1; then
-  if flatpak list --app | grep -q '^org\.securebits\.bashscriptmaker'; then
-    log "Entferne Flatpak-App org.securebits.bashscriptmaker…"
-    flatpak uninstall -y org.securebits.bashscriptmaker >/dev/null 2>&1 || true
-  fi
-fi
 
 if [[ $KEEP_CONFIG -eq 0 ]]; then
   log "Entferne Konfigurations-/Cache-Verzeichnisse…"
