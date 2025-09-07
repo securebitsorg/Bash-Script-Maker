@@ -63,8 +63,6 @@ py-modules = ["bash_script_maker", "syntax_highlighter", "localization", "custom
 include-package-data = true
 zip-safe = false
 
-
-
 [tool.pytest.ini_options]
 minversion = "6.0"
 addopts = "-ra -q --strict-markers --disable-warnings"
@@ -85,18 +83,26 @@ exclude_lines = [
     "if __name__ == .__main__.:",
 ]
 
+# MODERNE SEMANTIC-RELEASE KONFIGURATION
 [tool.semantic_release]
-version_variable = "VERSION"
 branch = "main"
-upload_to_pypi = true
-upload_to_release = true
-build_command = "pip install build && python -m build"
-commit_message = "chore(release): {version}\n\n[skip ci]"
 commit_author = "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+commit_message = "chore(release): bump version to {version}"
 tag_format = "v{version}"
 
-[tool.semantic_release.commit_parser_options]
-allowed_tags = ["build", "chore", "ci", "docs", "feat", "fix", "perf", "style", "refactor", "test"]
+[tool.semantic_release.version]
+source = "file"
+path = "VERSION"
+
+[tool.semantic_release.commit_parser]
+major_on_breaking = true
 minor_tags = ["feat"]
 patch_tags = ["fix", "perf", "build", "chore", "ci", "docs", "style", "refactor", "test"]
+
+[tool.semantic_release.build]
+build_command = "pip install build && python -m build"
+
+[tool.semantic_release.publish]
+dist_glob_patterns = ["dist/*"]
+upload_to_vcs_release = true
 
