@@ -42,12 +42,25 @@ print_status "Erstelle Verzeichnisse..."
 mkdir -p ~/.local/share/applications
 mkdir -p ~/.local/share/icons/hicolor/scalable/apps
 
-# Kopiere Desktop-Datei
+# Erstelle Desktop-Datei mit korrekten absoluten Pfaden
 print_status "Installiere Desktop-Datei..."
-if cp bash-script-maker.desktop ~/.local/share/applications/; then
+if cat > ~/.local/share/applications/bash-script-maker.desktop << EOF
+[Desktop Entry]
+Name=Bash-Script-Maker
+Comment=Ein GUI-Programm zur Erstellung von Bash-Scripts
+Exec=$HOME/.local/bin/bash-script-maker
+Icon=$HOME/.local/share/icons/hicolor/scalable/apps/bash-script-maker.svg
+Terminal=false
+Type=Application
+Categories=Development;Utility;TextEditor;
+Keywords=bash;script;editor;generator;development;
+StartupWMClass=bash-script-maker
+MimeType=text/x-shellscript;application/x-shellscript;
+EOF
+then
     print_success "Desktop-Datei installiert: ~/.local/share/applications/bash-script-maker.desktop"
 else
-    print_error "Fehler beim Kopieren der Desktop-Datei!"
+    print_error "Fehler beim Erstellen der Desktop-Datei!"
     exit 1
 fi
 
