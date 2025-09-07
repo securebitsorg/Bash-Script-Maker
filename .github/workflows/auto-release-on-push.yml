@@ -55,7 +55,7 @@ jobs:
           RELEASE_TYPE=""
           NEW_VERSION=""
           
-          if [[ "$COMMIT_MSG" =~ ^(feat|feature)(\(.+\))?!: ]] | [[ "$COMMIT_MSG" =~ BREAKING[[:space:]]CHANGE ]]; then
+          if [[ "$COMMIT_MSG" =~ ^(feat|feature)(\(.+\))?!: ]] || [[ "$COMMIT_MSG" =~ BREAKING[[:space:]]CHANGE ]]; then
             # Major release (breaking change)
             SHOULD_RELEASE="true"
             RELEASE_TYPE="major"
