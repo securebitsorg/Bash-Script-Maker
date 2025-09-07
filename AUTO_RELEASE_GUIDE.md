@@ -54,7 +54,7 @@ git commit -m "Große Änderungen [major]"
 4. **Tag erstellen** → Git-Tag wird automatisch erstellt
 5. **Release erstellen** → GitHub Release mit Artefakten
 6. **Build-Prozess** → Python-Pakete und Flatpak werden gebaut
-7. **PyPI-Upload** → Automatische Veröffentlichung (optional)
+7. **PyPI-Upload** → Automatische Veröffentlichung auf https://pypi.org/project/bash-script-maker/
 
 ## 📋 Beispiele für die Praxis
 
