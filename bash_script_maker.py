@@ -4,8 +4,6 @@
 Bash-Script-Maker - Ein GUI-Programm zur Erstellung von Bash-Scripts
 """
 
-
-
 try:
     from __version__ import __version__
 except ImportError:
