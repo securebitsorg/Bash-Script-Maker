@@ -485,31 +485,31 @@ class BashScriptMaker:
         """Erstellt den Header-Bereich mit Logo, App-Titel und Version"""
         header_frame = ttk.Frame(self.root, bootstyle="primary")
         header_frame.pack(side=tk.TOP, fill=tk.X, padx=5, pady=(5, 10))
-        
+
         # Header-Container für bessere Kontrolle
         header_container = ttk.Frame(header_frame)
         header_container.pack(fill=tk.X, padx=15, pady=10)
-        
+
         # Logo (links)
         logo_frame = ttk.Frame(header_container)
         logo_frame.pack(side=tk.LEFT)
-        
+
         try:
             script_dir = os.path.dirname(os.path.abspath(__file__))
             logo_path = os.path.join(script_dir, "assets", "bash-script-maker-48.png")
-            
+
             if os.path.exists(logo_path):
                 try:
                     from PIL import Image, ImageTk
-                    
+
                     # Logo für Header (48x48)
                     img = Image.open(logo_path)
                     logo_photo = ImageTk.PhotoImage(img)
-                    
+
                     logo_label = ttk.Label(logo_frame, image=logo_photo)
                     logo_label.image = logo_photo  # Referenz behalten
                     logo_label.pack(side=tk.LEFT, padx=(0, 15))
-                    
+
                 except ImportError:
                     # Fallback: Großes Emoji
                     logo_label = ttk.Label(logo_frame, text="🖥️", font=("Arial", 36))
@@ -518,51 +518,52 @@ class BashScriptMaker:
                 # Fallback: Emoji
                 logo_label = ttk.Label(logo_frame, text="🖥️", font=("Arial", 36))
                 logo_label.pack(side=tk.LEFT, padx=(0, 15))
-                
+
         except Exception as e:
             print(f"Fehler beim Laden des Header-Logos: {e}")
             # Minimaler Fallback
             logo_label = ttk.Label(logo_frame, text="🖥️", font=("Arial", 24))
             logo_label.pack(side=tk.LEFT, padx=(0, 15))
-        
+
         # Titel und Version (mittig-links)
         title_frame = ttk.Frame(header_container)
         title_frame.pack(side=tk.LEFT, fill=tk.X, expand=True)
-        
+
         # Haupttitel
         title_label = ttk.Label(
             title_frame,
             text="Bash-Script-Maker",
             font=("Arial", 24, "bold"),
-            bootstyle="inverse-primary"
+            bootstyle="inverse-primary",
         )
         title_label.pack(anchor=tk.W)
-        
+
         # Untertitel mit Version
         subtitle_label = ttk.Label(
             title_frame,
             text=f"Version {__version__} - Professioneller Bash-Script-Generator",
             font=("Arial", 11),
-            bootstyle="inverse-secondary"
+            bootstyle="inverse-secondary",
         )
         subtitle_label.pack(anchor=tk.W, pady=(2, 0))
-        
+
         # Status-Info (rechts)
         status_frame = ttk.Frame(header_container)
         status_frame.pack(side=tk.RIGHT)
-        
+
         # Aktuelle Zeit/Datum als zusätzliche Info
         import datetime
+
         current_time = datetime.datetime.now().strftime("%d.%m.%Y")
-        
+
         info_label = ttk.Label(
             status_frame,
             text=f"Gestartet: {current_time}",
             font=("Arial", 9),
-            bootstyle="inverse-secondary"
+            bootstyle="inverse-secondary",
         )
         info_label.pack(anchor=tk.E)
-        
+
         # Separator-Linie unter dem Header
         separator = ttk.Separator(self.root, orient=tk.HORIZONTAL)
         separator.pack(side=tk.TOP, fill=tk.X, padx=5)
