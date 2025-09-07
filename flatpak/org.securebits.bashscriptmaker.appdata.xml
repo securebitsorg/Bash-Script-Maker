@@ -46,6 +46,17 @@
     <keyword>linux</keyword>
   </keywords>
   <releases>
+    <release version="1.4.2" date="2024-09-07">
+      <description>
+        <p>Aktuelle Version mit verbesserter Sicherheit und automatischen Releases</p>
+        <ul>
+          <li>Implementierte explizite GitHub Token Berechtigungen</li>
+          <li>Verbesserte Flatpak-Paket-Erstellung</li>
+          <li>Automatische PyPI-Integration</li>
+          <li>Vollständige CI/CD-Pipeline</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.1.0" date="2024-01-01">
       <description>
         <p>Erste Flatpak-Version mit vollständiger Desktop-Integration</p>

@@ -11,8 +11,9 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read         # Needed to checkout code
+  contents: write        # Needed to upload to releases
   actions: read         # Needed to read workflow artifacts
+  packages: write       # Needed to publish packages
 
 jobs:
   build-flatpak:
@@ -91,3 +92,66 @@ jobs:
           name: flatpak-bundle
           path: BashScriptMaker-${{ steps.version.outputs.VERSION }}.flatpak
           retention-days: 7
+
+      - name: Upload to GitHub Packages (Container Registry)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          # Login to GitHub Container Registry
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          
+          # Create OCI image from Flatpak bundle
+          mkdir -p oci-build
+          cd oci-build
+          
+          # Create a simple Dockerfile to package the Flatpak
+          cat > Dockerfile << EOF
+          FROM scratch
+          COPY BashScriptMaker-${{ steps.version.outputs.VERSION }}.flatpak /BashScriptMaker.flatpak
+          LABEL org.opencontainers.image.title="Bash-Script-Maker Flatpak"
+          LABEL org.opencontainers.image.description="Flatpak package for Bash-Script-Maker"
+          LABEL org.opencontainers.image.version="${{ steps.version.outputs.VERSION }}"
+          LABEL org.opencontainers.image.source="https://github.com/securebitsorg/bash-script-maker"
+          EOF
+          
+          # Copy Flatpak bundle
+          cp ../BashScriptMaker-${{ steps.version.outputs.VERSION }}.flatpak .
+          
+          # Build and push container
+          docker build -t ghcr.io/securebitsorg/bash-script-maker-flatpak:${{ steps.version.outputs.VERSION }} .
+          docker push ghcr.io/securebitsorg/bash-script-maker-flatpak:${{ steps.version.outputs.VERSION }}
+          
+          # Tag as latest
+          docker tag ghcr.io/securebitsorg/bash-script-maker-flatpak:${{ steps.version.outputs.VERSION }} ghcr.io/securebitsorg/bash-script-maker-flatpak:latest
+          docker push ghcr.io/securebitsorg/bash-script-maker-flatpak:latest
+
+      - name: Upload to Latest Release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: BashScriptMaker-${{ steps.version.outputs.VERSION }}.flatpak
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release for Tags
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: BashScriptMaker-${{ steps.version.outputs.VERSION }}.flatpak
+          body: |
+            ## Flatpak Package für Version ${{ steps.version.outputs.VERSION }}
+            
+            ### Installation:
+            ```bash
+            # Direkt installieren
+            flatpak install --user BashScriptMaker-${{ steps.version.outputs.VERSION }}.flatpak
+            
+            # Oder über Container Registry
+            docker pull ghcr.io/securebitsorg/bash-script-maker-flatpak:${{ steps.version.outputs.VERSION }}
+            ```
+            
+            ### Ausführen:
+            ```bash
+            flatpak run org.securebits.bashscriptmaker
+            ```
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
