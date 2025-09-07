@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bash-script-maker"
-version = "1.1.0"
+dynamic = ["version"]
 description = "Ein GUI-Programm zur Erstellung von Bash-Scripts mit visueller Unterstützung"
 readme = "README.md"
-license = "MIT"
+license = {text = "MIT"}
 authors = [
     {name = "Marcel Dellmann", email = "support@secure-bits.org"},
 ]
@@ -19,6 +19,7 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
@@ -31,7 +32,10 @@ classifiers = [
     "Topic :: Software Development :: Code Generators",
 ]
 requires-python = ">=3.8"
-dependencies = []
+dependencies = [
+    "ttkbootstrap>=1.10.1",
+    "pygments>=2.15.1",
+]
 
 [project.optional-dependencies]
 dev = [
@@ -63,6 +67,9 @@ py-modules = ["bash_script_maker", "syntax_highlighter", "localization", "custom
 include-package-data = true
 zip-safe = false
 
+[tool.setuptools.dynamic]
+version = {file = "VERSION"}
+
 [tool.pytest.ini_options]
 minversion = "6.0"
 addopts = "-ra -q --strict-markers --disable-warnings"
@@ -85,24 +92,22 @@ exclude_lines = [
 
 # SEMANTIC-RELEASE KONFIGURATION
 [tool.semantic_release]
-branch = "main"
-commit_author = "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
-commit_message = "chore(release): bump version to {version}"
-tag_format = "v{version}"
-
-[tool.semantic_release.version]
-source = "file"
-path = "VERSION"
-
-[tool.semantic_release.commit_parser]
-major_on_breaking = true
-minor_tags = ["feat"]
-patch_tags = ["fix", "perf", "build", "chore", "ci", "docs", "style", "refactor", "test"]
-
-[tool.semantic_release.build]
+version_toml = [
+    "pyproject.toml:project.version",
+]
+version_variables = [
+    "VERSION",
+]
 build_command = "pip install build && python -m build"
-
-[tool.semantic_release.publish]
 dist_glob_patterns = ["dist/*"]
 upload_to_vcs_release = true
+commit_message = "chore(release): bump version to {version}"
+commit_author = "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+tag_format = "v{version}"
+branch = "main"
+
+[tool.semantic_release.commit_parser_options]
+allowed_tags = ["build", "chore", "ci", "docs", "feat", "fix", "perf", "style", "refactor", "test"]
+minor_tags = ["feat"]
+patch_tags = ["fix", "perf", "build", "chore", "ci", "docs", "style", "refactor", "test"]
 
