@@ -7,7 +7,7 @@ name = "bash-script-maker"
 dynamic = ["version"]
 description = "Ein GUI-Programm zur Erstellung von Bash-Scripts mit visueller Unterstützung"
 readme = "README.md"
-license = {text = "MIT"}
+license = "MIT"
 authors = [
     {name = "Marcel Dellmann", email = "support@secure-bits.org"},
 ]
