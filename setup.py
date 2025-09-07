@@ -94,7 +94,7 @@ setup(
     url="https://github.com/securebitsorg/bash-script-maker",  # Update with your GitHub URL
     license="MIT",
     packages=[],
-    py_modules=["bash_script_maker", "syntax_highlighter"],
+    py_modules=["bash_script_maker", "syntax_highlighter", "localization", "custom_dialogs", "assets", "__version__"],
     include_package_data=True,
     install_requires=REQUIREMENTS,
     extras_require={
