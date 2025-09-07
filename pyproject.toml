@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bash-script-maker"
-version = "1.1.0"  # Zurück zur statischen Version für semantic-release
+dynamic = ["version"]
 description = "Ein GUI-Programm zur Erstellung von Bash-Scripts mit visueller Unterstützung"
 readme = "README.md"
 license = {text = "MIT"}
@@ -47,6 +47,7 @@ dev = [
     "tox>=3.20.0",
     "twine>=3.0.0",
     "build>=0.7.0",
+    "bandit>=1.7.0",
 ]
 
 [project.urls]
@@ -67,10 +68,8 @@ py-modules = ["bash_script_maker", "syntax_highlighter", "localization", "custom
 include-package-data = true
 zip-safe = false
 
-[tool.setuptools]
-py-modules = ["bash_script_maker", "syntax_highlighter", "localization", "custom_dialogs", "assets"]
-include-package-data = true
-zip-safe = false
+[tool.setuptools.dynamic]
+version = {file = "VERSION"}
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -94,8 +93,7 @@ exclude_lines = [
 
 # SEMANTIC-RELEASE KONFIGURATION
 [tool.semantic_release]
-version_source = "file"
-version_file = "VERSION"
+version_variables = ["VERSION:__version__"]
 build_command = "pip install build && python -m build"
 commit_message = "chore(release): bump version to {version}"
 commit_author = "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
