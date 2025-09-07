@@ -163,7 +163,7 @@ if [ -f "bash-script-maker.desktop" ] && [ -f "assets/bash-script-maker.svg" ]; 
 Name=Bash-Script-Maker
 Comment=Ein GUI-Programm zur Erstellung von Bash-Scripts
 Exec=$HOME/.local/bin/bash-script-maker
-Icon=$HOME/.local/share/icons/hicolor/scalable/apps/bash-script-maker.svg
+Icon=bash-script-maker
 Terminal=false
 Type=Application
 Categories=Development;Utility;TextEditor;
