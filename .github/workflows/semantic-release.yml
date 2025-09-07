@@ -1,8 +1,6 @@
-name: Semantic Release
+name: Semantic Release - DISABLED
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -71,7 +69,32 @@ jobs:
 
       - name: Run semantic-release
         id: semantic
-        run: semantic-release
+        run: |
+          # Führe semantic-release aus und capture Output
+          semantic-release --dry-run > semantic-output.txt 2>&1 || true
+          
+          # Prüfe ob ein Release erstellt werden würde
+          if grep -q "The next release version is" semantic-output.txt; then
+            echo "Release would be created, running actual semantic-release"
+            semantic-release
+            echo "new_release_published=true" >> $GITHUB_OUTPUT
+            
+            # Extrahiere Version aus Git Tags
+            LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+            VERSION=${LATEST_TAG#v}
+            echo "new_release_version=$VERSION" >> $GITHUB_OUTPUT
+            echo "new_release_git_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
+            
+            echo "✅ Release $VERSION created"
+          else
+            echo "No release needed"
+            echo "new_release_published=false" >> $GITHUB_OUTPUT
+            echo "new_release_version=" >> $GITHUB_OUTPUT
+            echo "new_release_git_tag=" >> $GITHUB_OUTPUT
+          fi
+          
+          # Debug output
+          echo "Release published: $(cat $GITHUB_OUTPUT | grep new_release_published || echo 'not set')"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
