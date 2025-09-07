@@ -1,0 +1,184 @@
+name: Auto Release on Push
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - 'README.md'
+      - 'docs/**'
+      - '*.md'
+
+jobs:
+  check-for-release:
+    name: Check for Release Triggers
+    runs-on: ubuntu-latest
+    outputs:
+      should_release: ${{ steps.check.outputs.should_release }}
+      release_type: ${{ steps.check.outputs.release_type }}
+      version: ${{ steps.check.outputs.version }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check commit message for release triggers
+        id: check
+        run: |
+          COMMIT_MSG="${{ github.event.head_commit.message }}"
+          echo "Commit message: $COMMIT_MSG"
+          
+          # Aktuelle Version lesen
+          CURRENT_VERSION=$(cat VERSION 2>/dev/null || echo "0.0.0")
+          echo "Current version: $CURRENT_VERSION"
+          
+          # Release-Typ bestimmen basierend auf Commit-Message
+          SHOULD_RELEASE="false"
+          RELEASE_TYPE=""
+          NEW_VERSION=""
+          
+          if [[ "$COMMIT_MSG" =~ ^(feat|feature)(\(.+\))?!: ]] || [[ "$COMMIT_MSG" =~ BREAKING[[:space:]]CHANGE ]]; then
+            # Major release (breaking change)
+            SHOULD_RELEASE="true"
+            RELEASE_TYPE="major"
+            NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{print $1+1".0.0"}')
+          elif [[ "$COMMIT_MSG" =~ ^(feat|feature)(\(.+\))?: ]]; then
+            # Minor release (new feature)
+            SHOULD_RELEASE="true"
+            RELEASE_TYPE="minor"
+            NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{print $1"."$2+1".0"}')
+          elif [[ "$COMMIT_MSG" =~ ^(fix|bugfix)(\(.+\))?: ]]; then
+            # Patch release (bug fix)
+            SHOULD_RELEASE="true"
+            RELEASE_TYPE="patch"
+            NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{print $1"."$2"."$3+1}')
+          elif [[ "$COMMIT_MSG" =~ \[release\] ]]; then
+            # Manueller Release-Trigger
+            SHOULD_RELEASE="true"
+            RELEASE_TYPE="patch"
+            NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{print $1"."$2"."$3+1}')
+          elif [[ "$COMMIT_MSG" =~ \[major\] ]]; then
+            SHOULD_RELEASE="true"
+            RELEASE_TYPE="major"
+            NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{print $1+1".0.0"}')
+          elif [[ "$COMMIT_MSG" =~ \[minor\] ]]; then
+            SHOULD_RELEASE="true"
+            RELEASE_TYPE="minor"
+            NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{print $1"."$2+1".0"}')
+          fi
+          
+          echo "should_release=$SHOULD_RELEASE" >> $GITHUB_OUTPUT
+          echo "release_type=$RELEASE_TYPE" >> $GITHUB_OUTPUT
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          
+          echo "Should release: $SHOULD_RELEASE"
+          echo "Release type: $RELEASE_TYPE"
+          echo "New version: $NEW_VERSION"
+
+  create-release:
+    name: Create Automatic Release
+    needs: check-for-release
+    runs-on: ubuntu-latest
+    if: needs.check-for-release.outputs.should_release == 'true'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: Update version files
+        run: |
+          NEW_VERSION="${{ needs.check-for-release.outputs.version }}"
+          
+          # VERSION-Datei aktualisieren
+          echo "$NEW_VERSION" > VERSION
+          
+          # __version__.py aktualisieren
+          cat > __version__.py << EOF
+          #!/usr/bin/env python3
+          # -*- coding: utf-8 -*-
+          """
+          Version information for Bash-Script-Maker
+          """
+          
+          __version__ = "$NEW_VERSION"
+          __version_info__ = ($(echo $NEW_VERSION | sed 's/\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\).*/\1, \2, \3/'))
+          EOF
+          
+          # pyproject.toml aktualisieren
+          sed -i "s/^version = .*/version = \"$NEW_VERSION\"/" pyproject.toml
+
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          NEW_VERSION="${{ needs.check-for-release.outputs.version }}"
+          RELEASE_TYPE="${{ needs.check-for-release.outputs.release_type }}"
+          COMMIT_MSG="${{ github.event.head_commit.message }}"
+          
+          # Basis Release-Notes erstellen
+          cat > release_notes.txt << EOF
+          ## Version $NEW_VERSION
+          
+          **Release-Typ:** $RELEASE_TYPE
+          
+          ### Änderungen
+          
+          $COMMIT_MSG
+          
+          ### Installation
+          
+          \`\`\`bash
+          # Via pip
+          pip install bash-script-maker==$NEW_VERSION
+          
+          # Via Flatpak
+          flatpak install BashScriptMaker-$NEW_VERSION.flatpak
+          
+          # Aus Quellcode
+          git clone https://github.com/securebitsorg/bash-script-maker.git
+          cd bash-script-maker
+          git checkout v$NEW_VERSION
+          ./install.sh
+          \`\`\`
+          
+          ### Artefakte
+          
+          - Python Wheel (.whl)
+          - Source Distribution (.tar.gz)
+          - Flatpak Bundle (.flatpak)
+          - Vollständiger Quellcode
+          EOF
+          
+          echo "Release-Notes erstellt für Version $NEW_VERSION"
+
+      - name: Commit version changes
+        run: |
+          NEW_VERSION="${{ needs.check-for-release.outputs.version }}"
+          git add VERSION __version__.py pyproject.toml
+          git commit -m "chore: bump version to $NEW_VERSION [skip ci]"
+
+      - name: Create and push tag
+        run: |
+          NEW_VERSION="${{ needs.check-for-release.outputs.version }}"
+          git tag -a "v$NEW_VERSION" -m "Automatic release v$NEW_VERSION"
+          git push origin main
+          git push origin "v$NEW_VERSION"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ needs.check-for-release.outputs.version }}
+          name: Release ${{ needs.check-for-release.outputs.version }}
+          body_path: release_notes.txt
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

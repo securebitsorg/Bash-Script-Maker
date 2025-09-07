@@ -19,7 +19,31 @@ Der Release-Prozess wird durch GitHub Actions automatisiert und wird ausgelöst,
 
 ## Release erstellen
 
-### Methode 1: Helper-Script (Empfohlen)
+### Methode 1: Automatisch bei Git Push (Neu! 🚀)
+
+**Einfach committen und pushen - Release passiert automatisch:**
+
+```bash
+# Bug-Fix → Patch Release (1.2.3 → 1.2.4)
+git commit -m "fix: behebe kritischen Fehler"
+git push origin main
+
+# Feature → Minor Release (1.2.3 → 1.3.0)  
+git commit -m "feat: füge neue Export-Funktion hinzu"
+git push origin main
+
+# Breaking Change → Major Release (1.2.3 → 2.0.0)
+git commit -m "feat!: neue API-Struktur"
+git push origin main
+```
+
+**Verfügbare Workflows:**
+- **Semantic Release**: Basiert auf Conventional Commits
+- **Simple Auto Release**: Reagiert auf `[release]`, `[minor]`, `[major]` Tags
+
+Siehe: [AUTO_RELEASE_GUIDE.md](./AUTO_RELEASE_GUIDE.md)
+
+### Methode 2: Helper-Script
 
 ```bash
 # Interaktiv - wählen Sie die Art des Releases
@@ -35,7 +59,7 @@ Das Script:
 - Erstellt und pusht den Tag
 - Startet automatisch den Release-Prozess
 
-### Methode 2: Manuell
+### Methode 3: Manuell
 
 ```bash
 # 1. Version in allen Dateien aktualisieren
