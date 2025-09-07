@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bash-script-maker"
-version = "1.2.1"
+version = "1.2.2"
 description = "Ein GUI-Programm zur Erstellung von Bash-Scripts mit visueller Unterstützung"
 readme = "README.md"
 license = "MIT"
@@ -68,7 +68,7 @@ include-package-data = true
 zip-safe = false
 
 [tool.setuptools.dynamic]
-version = {file = "VERSION"}
+version = "1.2.2"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
