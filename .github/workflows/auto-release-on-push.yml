@@ -39,6 +39,17 @@ jobs:
           CURRENT_VERSION=$(cat VERSION 2>/dev/null || echo "0.0.0")
           echo "Current version: $CURRENT_VERSION"
           
+          # Letzten Git-Tag abrufen
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          LAST_TAG_VERSION=${LAST_TAG#v}
+          echo "Last tag version: $LAST_TAG_VERSION"
+          
+          # Höchste Version verwenden
+          if [[ "$LAST_TAG_VERSION" > "$CURRENT_VERSION" ]]; then
+            CURRENT_VERSION="$LAST_TAG_VERSION"
+            echo "Using tag version as base: $CURRENT_VERSION"
+          fi
+          
           # Release-Typ bestimmen basierend auf Commit-Message
           SHOULD_RELEASE="false"
           RELEASE_TYPE=""
@@ -72,6 +83,12 @@ jobs:
             SHOULD_RELEASE="true"
             RELEASE_TYPE="minor"
             NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{print $1"."$2+1".0"}')
+          fi
+          
+          # Überprüfen ob der berechnete Tag bereits existiert
+          if [[ "$SHOULD_RELEASE" == "true" ]] && git rev-parse "v$NEW_VERSION" >/dev/null 2>&1; then
+            echo "Tag v$NEW_VERSION already exists, skipping release"
+            SHOULD_RELEASE="false"
           fi
           
           echo "should_release=$SHOULD_RELEASE" >> $GITHUB_OUTPUT
@@ -145,9 +162,6 @@ jobs:
           # Via pip
           pip install bash-script-maker==$NEW_VERSION
           
-          # Via Flatpak
-          flatpak install BashScriptMaker-$NEW_VERSION.flatpak
-          
           # Aus Quellcode
           git clone https://github.com/securebitsorg/bash-script-maker.git
           cd bash-script-maker
@@ -174,6 +188,13 @@ jobs:
       - name: Create and push tag
         run: |
           NEW_VERSION="${{ needs.check-for-release.outputs.version }}"
+          
+          # Überprüfen ob Tag bereits existiert
+          if git rev-parse "v$NEW_VERSION" >/dev/null 2>&1; then
+            echo "Tag v$NEW_VERSION already exists, skipping tag creation"
+            exit 0
+          fi
+          
           git tag -a "v$NEW_VERSION" -m "Automatic release v$NEW_VERSION"
           git push origin main
           git push origin "v$NEW_VERSION"
