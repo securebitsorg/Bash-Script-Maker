@@ -1,0 +1,283 @@
+name: Automatic Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger bei Tags wie v1.2.3
+
+jobs:
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      release_id: ${{ steps.create_release.outputs.id }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Vollständige Git-Historie für CHANGELOG
+
+      - name: Get tag version
+        id: get_version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Extract changelog for this version
+        id: changelog
+        run: |
+          VERSION=${{ steps.get_version.outputs.VERSION }}
+          
+          # Extrahiere Release-Notes aus CHANGELOG.md
+          if [ -f "CHANGELOG.md" ]; then
+            # Suche nach der Version im CHANGELOG
+            awk -v version="$VERSION" '
+              /^## \[/ {
+                if ($0 ~ "\\[" version "\\]") {
+                  found = 1
+                  next
+                }
+                if (found) exit
+              }
+              found && /^## \[/ { exit }
+              found && !/^## \[/ { print }
+            ' CHANGELOG.md > release_notes.txt
+            
+            # Falls keine spezifischen Release-Notes gefunden wurden, erstelle Standard-Text
+            if [ ! -s release_notes.txt ]; then
+              echo "## Version $VERSION" > release_notes.txt
+              echo "" >> release_notes.txt
+              echo "### Änderungen" >> release_notes.txt
+              echo "- Neue Version veröffentlicht" >> release_notes.txt
+              echo "" >> release_notes.txt
+              echo "### Installation" >> release_notes.txt
+              echo "\`\`\`bash" >> release_notes.txt
+              echo "# Via pip" >> release_notes.txt
+              echo "pip install bash-script-maker==$VERSION" >> release_notes.txt
+              echo "" >> release_notes.txt
+              echo "# Via Flatpak" >> release_notes.txt
+              echo "flatpak install BashScriptMaker-$VERSION.flatpak" >> release_notes.txt
+              echo "\`\`\`" >> release_notes.txt
+            fi
+          else
+            echo "Keine CHANGELOG.md gefunden. Erstelle Standard-Release-Notes." > release_notes.txt
+          fi
+          
+          # Zeige die Release-Notes zur Überprüfung
+          echo "Release-Notes für Version $VERSION:"
+          cat release_notes.txt
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.get_version.outputs.TAG_NAME }}
+          name: Release ${{ steps.get_version.outputs.VERSION }}
+          body_path: release_notes.txt
+          draft: false
+          prerelease: ${{ contains(steps.get_version.outputs.VERSION, '-') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-and-upload-assets:
+    name: Build and Upload Release Assets
+    needs: create-release
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Get version
+        id: get_version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine wheel setuptools
+
+      - name: Build Python packages
+        run: |
+          python -m build
+          
+      - name: Create source archive
+        run: |
+          VERSION=${{ steps.get_version.outputs.VERSION }}
+          git archive --format=tar.gz --prefix=bash-script-maker-$VERSION/ HEAD > bash-script-maker-$VERSION-source.tar.gz
+
+      - name: Upload Python wheel
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.get_version.outputs.VERSION }}
+          files: |
+            dist/*.whl
+            dist/*.tar.gz
+            bash-script-maker-${{ steps.get_version.outputs.VERSION }}-source.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-flatpak:
+    name: Build Flatpak Package
+    needs: create-release
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get version
+        id: get_version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Set up Flatpak builder
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y flatpak flatpak-builder
+          flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+      - name: Clear Flatpak cache
+        run: |
+          rm -rf ~/.cache/flatpak-builder || true
+
+      - name: Create build directory and files
+        run: |
+          mkdir -p build/flatpak
+          cp bash_script_maker_flatpak.py build/flatpak/
+          cp flatpak/org.securebits.bashscriptmaker.appdata.xml build/flatpak/
+          
+          # Create the correct manifest
+          cat > build/flatpak/org.securebits.bashscriptmaker.yml << 'EOF'
+          app-id: org.securebits.bashscriptmaker
+          runtime: org.freedesktop.Platform
+          runtime-version: '23.08'
+          sdk: org.freedesktop.Sdk
+          command: bash-script-maker
+          finish-args:
+            - --share=ipc
+            - --socket=wayland
+            - --socket=x11
+            - --socket=pulseaudio
+            - --device=dri
+            - --filesystem=home
+            - --filesystem=host
+            - --talk-name=org.freedesktop.Notifications
+          modules:
+            - name: bash-script-maker
+              buildsystem: simple
+              build-commands:
+                - mkdir -p /app/bin
+                - cp bash_script_maker_flatpak.py /app/bin/bash-script-maker
+                - chmod +x /app/bin/bash-script-maker
+              sources:
+                - type: dir
+                  path: .
+          EOF
+
+      - name: Build Flatpak
+        run: |
+          cd build/flatpak
+          flatpak-builder --user --install-deps-from=flathub --force-clean --repo=repo build-dir org.securebits.bashscriptmaker.yml
+
+      - name: Create Flatpak Bundle
+        run: |
+          cd build/flatpak
+          flatpak build-bundle repo BashScriptMaker-${{ steps.get_version.outputs.VERSION }}.flatpak org.securebits.bashscriptmaker
+
+      - name: Upload Flatpak Bundle
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.get_version.outputs.VERSION }}
+          files: build/flatpak/BashScriptMaker-${{ steps.get_version.outputs.VERSION }}.flatpak
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-to-pypi:
+    name: Publish to PyPI
+    needs: [create-release, build-and-upload-assets]
+    runs-on: ubuntu-latest
+    if: ${{ !contains(github.ref_name, '-') }}  # Nur für stable releases, nicht pre-releases
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine
+
+      - name: Build packages
+        run: python -m build
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          skip-existing: true
+
+  update-changelog:
+    name: Update Changelog
+    needs: [create-release, build-and-upload-assets, build-flatpak]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get version
+        id: get_version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Update CHANGELOG.md
+        run: |
+          VERSION=${{ steps.get_version.outputs.VERSION }}
+          DATE=$(date +%Y-%m-%d)
+          
+          # Erstelle temporäre Datei mit aktualisiertem CHANGELOG
+          awk -v version="$VERSION" -v date="$DATE" '
+            /^## \[Unreleased\]/ {
+              print $0
+              print ""
+              print "### Added"
+              print ""
+              print "### Changed"
+              print ""
+              print "### Fixed"
+              print ""
+              print "## [" version "] - " date
+              next
+            }
+            { print }
+          ' CHANGELOG.md > CHANGELOG_temp.md
+          
+          mv CHANGELOG_temp.md CHANGELOG.md
+
+      - name: Commit CHANGELOG update
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add CHANGELOG.md
+          git commit -m "docs: update CHANGELOG for release v${{ steps.get_version.outputs.VERSION }}" || exit 0
+          git push
