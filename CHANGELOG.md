@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/securebitsorg/Bash-Script-Maker/compare/v1.3.1...v1.4.0) (2025-09-07)
+
+
+### Features
+
+* add comprehensive PyPI integration and documentation ([dc615ac](https://github.com/securebitsorg/Bash-Script-Maker/commit/dc615aca3bed90b421aa69bc26c57873bbbd7b13))
+
 # Changelog
 
 Alle wichtigen Änderungen an Bash-Script-Maker werden in dieser Datei dokumentiert.
