@@ -1,2 +1,8 @@
-__version__ = "1.4.0"
-__version_info__ = (1, 4, 0)
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Version information for Bash-Script-Maker
+"""
+
+__version__ = "1.4.1"
+__version_info__ = (1, 4, 1)

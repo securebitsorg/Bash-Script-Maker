@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bash-script-maker"
-version = "1.4.0"
+version = "1.4.1"
 description = "Ein GUI-Programm zur Erstellung von Bash-Scripts mit visueller Unterstützung"
 readme = "README.md"
 license = "MIT"
