@@ -67,8 +67,6 @@ py-modules = ["bash_script_maker", "syntax_highlighter", "localization", "custom
 include-package-data = true
 zip-safe = false
 
-[tool.setuptools.dynamic]
-version = "1.3.0"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
