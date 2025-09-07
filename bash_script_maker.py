@@ -134,7 +134,7 @@ class AboutDialog(ttk.Toplevel):
         # Logo und Titel-Bereich
         header_frame = ttk.Frame(container)
         header_frame.pack(fill=tk.X, pady=(0, 20))
-        
+
         # Logo hinzufügen
         self.add_logo_to_header(header_frame)
 
@@ -192,10 +192,7 @@ class AboutDialog(ttk.Toplevel):
 
         # Schließen-Button
         close_btn = ttk.Button(
-            container, 
-            text=_("Schließen"), 
-            command=self.destroy, 
-            bootstyle="primary"
+            container, text=_("Schließen"), command=self.destroy, bootstyle="primary"
         )
         close_btn.pack(pady=(20, 0))
 
@@ -204,36 +201,28 @@ class AboutDialog(ttk.Toplevel):
         try:
             script_dir = os.path.dirname(os.path.abspath(__file__))
             logo_path = os.path.join(script_dir, "assets", "bash-script-maker-64.png")
-            
+
             if os.path.exists(logo_path):
                 try:
                     from PIL import Image, ImageTk
-                    
+
                     # Logo für About-Dialog (64x64)
                     img = Image.open(logo_path)
                     logo_photo = ImageTk.PhotoImage(img)
-                    
+
                     logo_label = ttk.Label(header_frame, image=logo_photo)
                     logo_label.image = logo_photo  # Referenz behalten
                     logo_label.pack(anchor=tk.CENTER)
-                    
+
                 except ImportError:
                     # Fallback: Großes Emoji
-                    logo_label = ttk.Label(
-                        header_frame, 
-                        text="🖥️", 
-                        font=("Arial", 48)
-                    )
+                    logo_label = ttk.Label(header_frame, text="🖥️", font=("Arial", 48))
                     logo_label.pack(anchor=tk.CENTER)
             else:
                 # Fallback: Emoji
-                logo_label = ttk.Label(
-                    header_frame, 
-                    text="🖥️", 
-                    font=("Arial", 48)
-                )
+                logo_label = ttk.Label(header_frame, text="🖥️", font=("Arial", 48))
                 logo_label.pack(anchor=tk.CENTER)
-                
+
         except Exception as e:
             print(f"Fehler beim Hinzufügen des Logos zum About-Dialog: {e}")
             # Minimaler Fallback
@@ -392,108 +381,102 @@ class BashScriptMaker:
             # Logo-Container für bessere Anordnung
             logo_container = ttk.Frame(toolbar)
             logo_container.pack(side=tk.LEFT, padx=(0, 20), pady=15)
-            
+
             # Pfad zum Icon ermitteln
             script_dir = os.path.dirname(os.path.abspath(__file__))
             logo_path = os.path.join(script_dir, "assets", "bash-script-maker-48.png")
-            
+
             if os.path.exists(logo_path):
                 try:
                     from PIL import Image, ImageTk
-                    
+
                     # Logo laden - größer für bessere Sichtbarkeit
                     img = Image.open(logo_path)
                     # Optimale Größe für Toolbar (36x36)
                     img = img.resize((36, 36), Image.Resampling.LANCZOS)
                     logo_photo = ImageTk.PhotoImage(img)
-                    
+
                     # Logo-Label erstellen
                     logo_label = ttk.Label(logo_container, image=logo_photo)
                     logo_label.image = logo_photo  # Referenz behalten
                     logo_label.pack(side=tk.LEFT, padx=(0, 8))
-                    
+
                     # App-Name-Label hinzufügen
                     name_label = ttk.Label(
-                        logo_container, 
-                        text="Bash-Script-Maker", 
+                        logo_container,
+                        text="Bash-Script-Maker",
                         font=("Arial", 12, "bold"),
-                        foreground="#2c3e50"  # Dunkle Farbe für bessere Lesbarkeit
+                        foreground="#2c3e50",  # Dunkle Farbe für bessere Lesbarkeit
                     )
                     name_label.pack(side=tk.LEFT, anchor=tk.CENTER)
-                    
+
                     # Version-Label (kleiner) hinzufügen
                     version_label = ttk.Label(
-                        logo_container, 
-                        text=f"v{__version__}", 
+                        logo_container,
+                        text=f"v{__version__}",
                         font=("Arial", 9),
-                        foreground="#7f8c8d"  # Grau für subtile Version
+                        foreground="#7f8c8d",  # Grau für subtile Version
                     )
                     version_label.pack(side=tk.LEFT, padx=(5, 0), anchor=tk.CENTER)
-                    
+
                     # Tooltips hinzufügen
                     ToolTip(logo_label, text=f"Bash-Script-Maker v{__version__}")
                     ToolTip(name_label, text=f"Bash-Script-Maker v{__version__}")
                     ToolTip(version_label, text=f"Version {__version__}")
-                    
+
                     print("Logo und App-Name zur Toolbar hinzugefügt")
-                    
+
                 except ImportError:
                     # Fallback ohne PIL - verwende Text-Logo mit Name
-                    logo_label = ttk.Label(
-                        logo_container, 
-                        text="🖥️", 
-                        font=("Arial", 24)
-                    )
+                    logo_label = ttk.Label(logo_container, text="🖥️", font=("Arial", 24))
                     logo_label.pack(side=tk.LEFT, padx=(0, 8))
-                    
+
                     # App-Name auch im Fallback
                     name_label = ttk.Label(
-                        logo_container, 
-                        text="Bash-Script-Maker", 
-                        font=("Arial", 12, "bold")
+                        logo_container,
+                        text="Bash-Script-Maker",
+                        font=("Arial", 12, "bold"),
                     )
                     name_label.pack(side=tk.LEFT, anchor=tk.CENTER)
-                    
+
                     version_label = ttk.Label(
-                        logo_container, 
-                        text=f"v{__version__}", 
-                        font=("Arial", 9)
+                        logo_container, text=f"v{__version__}", font=("Arial", 9)
                     )
                     version_label.pack(side=tk.LEFT, padx=(5, 0), anchor=tk.CENTER)
-                    
+
                     # Tooltips
                     ToolTip(logo_label, text=f"Bash-Script-Maker v{__version__}")
                     ToolTip(name_label, text=f"Bash-Script-Maker v{__version__}")
                     ToolTip(version_label, text=f"Version {__version__}")
-                    
+
                     print("Text-Logo und App-Name zur Toolbar hinzugefügt")
-                    
+
             else:
                 # Nur Text-Branding wenn kein Icon gefunden
                 name_label = ttk.Label(
-                    logo_container, 
-                    text="🖥️ Bash-Script-Maker", 
-                    font=("Arial", 12, "bold")
+                    logo_container,
+                    text="🖥️ Bash-Script-Maker",
+                    font=("Arial", 12, "bold"),
                 )
                 name_label.pack(side=tk.LEFT)
-                
+
                 version_label = ttk.Label(
-                    logo_container, 
-                    text=f"v{__version__}", 
-                    font=("Arial", 9)
+                    logo_container, text=f"v{__version__}", font=("Arial", 9)
                 )
                 version_label.pack(side=tk.LEFT, padx=(5, 0), anchor=tk.CENTER)
-                
+
                 ToolTip(name_label, text=f"Bash-Script-Maker v{__version__}")
                 ToolTip(version_label, text=f"Version {__version__}")
-                
+
                 print(f"Logo-Datei nicht gefunden: {logo_path}, verwende Text-Branding")
-                
+
         except Exception as e:
             print(f"Fehler beim Hinzufügen des Logos: {e}")
             # Minimaler Fallback
             try:
-                fallback_label = ttk.Label(toolbar, text="Bash-Script-Maker", font=("Arial", 10, "bold"))
+                fallback_label = ttk.Label(
+                    toolbar, text="Bash-Script-Maker", font=("Arial", 10, "bold")
+                )
                 fallback_label.pack(side=tk.LEFT, padx=(0, 15), pady=20)
             except:
                 pass
