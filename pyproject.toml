@@ -83,7 +83,7 @@ exclude_lines = [
     "if __name__ == .__main__.:",
 ]
 
-# MODERNE SEMANTIC-RELEASE KONFIGURATION
+# SEMANTIC-RELEASE KONFIGURATION
 [tool.semantic_release]
 branch = "main"
 commit_author = "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
