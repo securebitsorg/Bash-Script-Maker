@@ -4,10 +4,66 @@
 Bash-Script-Maker - Ein GUI-Programm zur Erstellung von Bash-Scripts
 """
 
-try:
-    from __version__ import __version__
-except ImportError:
-    __version__ = "1.2.1"
+
+def get_version():
+    """Ermittelt die aktuelle Version dynamisch"""
+    import os
+
+    # 1. Versuche __version__.py zu importieren
+    try:
+        from __version__ import __version__
+
+        return __version__
+    except ImportError:
+        pass
+
+    # 2. Versuche VERSION Datei zu lesen
+    try:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        version_file = os.path.join(script_dir, "VERSION")
+        if os.path.exists(version_file):
+            with open(version_file, "r", encoding="utf-8") as f:
+                return f.read().strip()
+    except Exception:
+        pass
+
+    # 3. Versuche pyproject.toml zu parsen
+    try:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        pyproject_file = os.path.join(script_dir, "pyproject.toml")
+        if os.path.exists(pyproject_file):
+            with open(pyproject_file, "r", encoding="utf-8") as f:
+                content = f.read()
+                import re
+
+                match = re.search(r'version\s*=\s*"([^"]+)"', content)
+                if match:
+                    return match.group(1)
+    except Exception:
+        pass
+
+    # 4. Versuche Git-Tag zu ermitteln (falls in Git-Repository)
+    try:
+        import subprocess
+
+        result = subprocess.run(
+            ["git", "describe", "--tags", "--abbrev=0"],
+            capture_output=True,
+            text=True,
+            cwd=os.path.dirname(os.path.abspath(__file__)),
+        )
+        if result.returncode == 0:
+            tag = result.stdout.strip()
+            # Entferne 'v' Präfix falls vorhanden
+            return tag.lstrip("v")
+    except Exception:
+        pass
+
+    # 5. Fallback
+    return "1.9.0"
+
+
+__version__ = get_version()
 
 import tkinter as tk
 from tkinter import scrolledtext, messagebox
