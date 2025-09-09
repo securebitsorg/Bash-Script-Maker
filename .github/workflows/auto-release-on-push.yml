@@ -146,12 +146,13 @@ jobs:
           # pyproject.toml aktualisieren
           sed -i "s/^version = .*/version = \"$NEW_VERSION\"/" pyproject.toml
 
-      - name: Generate release notes
+      - name: Generate release notes and update CHANGELOG
         id: release_notes
         run: |
           NEW_VERSION="${{ needs.check-for-release.outputs.version }}"
           RELEASE_TYPE="${{ needs.check-for-release.outputs.release_type }}"
           COMMIT_MSG="${{ github.event.head_commit.message }}"
+          CURRENT_DATE=$(date '+%Y-%m-%d')
           
           # Basis Release-Notes erstellen
           cat > release_notes.txt << EOF
@@ -180,17 +181,69 @@ jobs:
           
           - Python Wheel (.whl)
           - Source Distribution (.tar.gz)
-          - Flatpak Bundle (.flatpak)
+          - Docker Image (ghcr.io)
           - Vollständiger Quellcode
           EOF
+          
+          # CHANGELOG.md automatisch aktualisieren
+          echo "📝 Aktualisiere CHANGELOG.md..."
+          
+          # Backup der aktuellen CHANGELOG erstellen
+          cp CHANGELOG.md CHANGELOG.md.bak
+          
+          # Neue CHANGELOG-Einträge basierend auf Commit-Message generieren
+          NEW_CHANGELOG_ENTRY=""
+          
+          # Änderungen aus Commit-Message extrahieren und kategorisieren
+          if [[ "$COMMIT_MSG" =~ ^(feat|feature)(\(.+\))?: ]]; then
+            NEW_CHANGELOG_ENTRY="### Added
+          - $(echo "$COMMIT_MSG" | sed 's/^[^:]*: //')"
+          elif [[ "$COMMIT_MSG" =~ ^(fix|bugfix)(\(.+\))?: ]]; then
+            NEW_CHANGELOG_ENTRY="### Fixed
+          - $(echo "$COMMIT_MSG" | sed 's/^[^:]*: //')"
+          elif [[ "$COMMIT_MSG" =~ ^(docs|doc)(\(.+\))?: ]]; then
+            NEW_CHANGELOG_ENTRY="### Documentation
+          - $(echo "$COMMIT_MSG" | sed 's/^[^:]*: //')"
+          elif [[ "$COMMIT_MSG" =~ ^(style|refactor)(\(.+\))?: ]]; then
+            NEW_CHANGELOG_ENTRY="### Changed
+          - $(echo "$COMMIT_MSG" | sed 's/^[^:]*: //')"
+          elif [[ "$COMMIT_MSG" =~ ^(test|tests)(\(.+\))?: ]]; then
+            NEW_CHANGELOG_ENTRY="### Testing
+          - $(echo "$COMMIT_MSG" | sed 's/^[^:]*: //')"
+          elif [[ "$COMMIT_MSG" =~ ^Merge[[:space:]]pull[[:space:]]request ]]; then
+            # Für Merge-Commits: PR-Titel extrahieren
+            PR_TITLE=$(echo "$COMMIT_MSG" | grep -o 'Merge pull request #[0-9]* from .*/.*' | sed 's/.*\///')
+            NEW_CHANGELOG_ENTRY="### Added
+          - $PR_TITLE (Pull Request merged)"
+          else
+            NEW_CHANGELOG_ENTRY="### Changed
+          - $COMMIT_MSG"
+          fi
+          
+          # Neue CHANGELOG mit Version am Anfang erstellen
+          cat > CHANGELOG.md << EOF
+          ## [$NEW_VERSION] - $CURRENT_DATE
+          
+          $NEW_CHANGELOG_ENTRY
+          
+          EOF
+          
+          # Rest der CHANGELOG (ab Zeile 8) anhängen, aber erste automatische Einträge überspringen
+          sed -n '8,$p' CHANGELOG.md.bak >> CHANGELOG.md
+          
+          echo "✅ CHANGELOG.md erfolgreich aktualisiert mit Version $NEW_VERSION"
+          
+          # Überprüfung der CHANGELOG-Struktur
+          echo "📋 Neue CHANGELOG-Struktur:"
+          head -15 CHANGELOG.md
           
           echo "Release-Notes erstellt für Version $NEW_VERSION"
 
       - name: Commit version changes
         run: |
           NEW_VERSION="${{ needs.check-for-release.outputs.version }}"
-          git add VERSION __version__.py pyproject.toml
-          git commit -m "chore: bump version to $NEW_VERSION [skip ci]"
+          git add VERSION __version__.py pyproject.toml CHANGELOG.md
+          git commit -m "chore: bump version to $NEW_VERSION and update CHANGELOG [skip ci]"
 
       - name: Create and push tag
         run: |
