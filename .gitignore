@@ -159,5 +159,16 @@ test_results/
 Environments
 
 # md files
+# md files
 AUTOMATIC_RELEASES.md
+Changelog_Automation.md
+Desktop_Launcher_Fix.md
+GITHUB_Setup.md
+GITHUB_Releases.md
+Release_Workflow_Fix.md
+Security_Improvements.md
+PyPI_Release.md
+PyPI_Setup.md
+SECURITY_IMPROVEMENTS.md
+
 # Finish
